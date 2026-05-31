@@ -1,0 +1,182 @@
+{
+  "info": {
+    "name": "API Estoque Roupas",
+    "description": "Coleção para testar todos os endpoints da Web API de Controle de Estoque.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5123" }
+  ],
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "GET - Listar todos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/products", "host": ["{{baseUrl}}"], "path": ["api","products"] }
+          }
+        },
+        {
+          "name": "GET - Por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/products/1", "host": ["{{baseUrl}}"], "path": ["api","products","1"] }
+          }
+        },
+        {
+          "name": "GET - Estoque baixo",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/products/low-stock", "host": ["{{baseUrl}}"], "path": ["api","products","low-stock"] }
+          }
+        },
+        {
+          "name": "POST - Criar produto",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Camiseta Regata\",\n  \"categoryId\": 1,\n  \"quantity\": 20,\n  \"reorderThreshold\": 5,\n  \"price\": 39.90\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/products", "host": ["{{baseUrl}}"], "path": ["api","products"] }
+          }
+        },
+        {
+          "name": "PUT - Atualizar produto",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Camisa Polo Azul Marinho\",\n  \"categoryId\": 1,\n  \"quantity\": 35,\n  \"reorderThreshold\": 5,\n  \"price\": 99.90\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/products/1", "host": ["{{baseUrl}}"], "path": ["api","products","1"] }
+          }
+        },
+        {
+          "name": "DELETE - Remover produto",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/products/1", "host": ["{{baseUrl}}"], "path": ["api","products","1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "GET - Listar todas",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/categories", "host": ["{{baseUrl}}"], "path": ["api","categories"] }
+          }
+        },
+        {
+          "name": "GET - Por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/categories/1", "host": ["{{baseUrl}}"], "path": ["api","categories","1"] }
+          }
+        },
+        {
+          "name": "POST - Criar categoria",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Acessórios\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/categories", "host": ["{{baseUrl}}"], "path": ["api","categories"] }
+          }
+        },
+        {
+          "name": "PUT - Atualizar categoria",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"id\": 5,\n  \"name\": \"Acessórios e Bonés\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/categories/5", "host": ["{{baseUrl}}"], "path": ["api","categories","5"] }
+          }
+        },
+        {
+          "name": "DELETE - Remover categoria",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/categories/5", "host": ["{{baseUrl}}"], "path": ["api","categories","5"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stock",
+      "item": [
+        {
+          "name": "POST - Entrada de estoque",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"quantity\": 10,\n  \"reason\": \"Reposição fornecedor\",\n  \"user\": \"admin\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/stock/entry", "host": ["{{baseUrl}}"], "path": ["api","stock","entry"] }
+          }
+        },
+        {
+          "name": "POST - Saída de estoque",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"quantity\": 2,\n  \"reason\": \"Venda balcão\",\n  \"user\": \"vendedor\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/stock/exit", "host": ["{{baseUrl}}"], "path": ["api","stock","exit"] }
+          }
+        },
+        {
+          "name": "GET - Histórico do produto",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/stock/history/1", "host": ["{{baseUrl}}"], "path": ["api","stock","history","1"] }
+          }
+        },
+        {
+          "name": "GET - Todas as movimentações",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/stock/movements", "host": ["{{baseUrl}}"], "path": ["api","stock","movements"] }
+          }
+        },
+        {
+          "name": "GET - Movimentações filtradas (ENTRADA)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/stock/movements?type=ENTRADA",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","stock","movements"],
+              "query": [{ "key": "type", "value": "ENTRADA" }]
+            }
+          }
+        },
+        {
+          "name": "GET - Alertas de reposição",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/stock/restock-alerts", "host": ["{{baseUrl}}"], "path": ["api","stock","restock-alerts"] }
+          }
+        },
+        {
+          "name": "GET - Relatório",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/stock/report", "host": ["{{baseUrl}}"], "path": ["api","stock","report"] }
+          }
+        }
+      ]
+    }
+  ]
+}

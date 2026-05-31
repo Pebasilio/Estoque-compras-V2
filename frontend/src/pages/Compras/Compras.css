@@ -1,0 +1,99 @@
+.compras-header {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compras-header h2 {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.compras-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.compra-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-left: 4px solid var(--accent-color);
+}
+
+.compra-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compra-product-name {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+
+.compra-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.divider {
+  color: var(--border-glass);
+}
+
+.compra-action-area {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.sugestao-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sugestao-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  font-family: 'Outfit', sans-serif;
+}
+
+.btn-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .compra-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .compra-action-area {
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-glass);
+  }
+}

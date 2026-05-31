@@ -1,0 +1,38 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-toggles {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-card);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+}
+
+.view-toggles .icon-btn {
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  width: auto;
+  height: auto;
+}
+
+.view-toggles .icon-btn.active {
+  background: var(--accent-gradient);
+  color: white;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}

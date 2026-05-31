@@ -1,0 +1,9 @@
+# Use this workspace to collaborate
+workspace:
+  id: ""
+
+localResources:
+  collections:
+    - ..\bin\Debug\net10.0\Postman\EstoqueAPI.postman_collection.json
+    - ..\bin\Debug\net7.0\Postman\EstoqueAPI.postman_collection.json
+    - ..\bin\Debug\net8.0\Postman\EstoqueAPI.postman_collection.json

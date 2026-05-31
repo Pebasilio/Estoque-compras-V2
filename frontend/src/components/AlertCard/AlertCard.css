@@ -1,0 +1,119 @@
+.alert-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-left: 4px solid;
+}
+
+.warning-alert {
+  border-left-color: var(--warning-color);
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.05) 0%, rgba(22, 30, 49, 0.7) 100%);
+}
+
+.critical-alert {
+  border-left-color: var(--danger-color);
+  background: linear-gradient(90deg, rgba(244, 63, 94, 0.05) 0%, rgba(22, 30, 49, 0.7) 100%);
+}
+
+.alert-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.warning-alert .alert-icon-container {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning-color);
+}
+
+.critical-alert .alert-icon-container {
+  background: rgba(244, 63, 94, 0.15);
+  color: var(--danger-color);
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.warning-alert .alert-title { color: var(--warning-color); }
+.critical-alert .alert-title { color: var(--danger-color); }
+
+.alert-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.alert-desc strong {
+  color: var(--text-primary);
+}
+
+.alert-action {
+  min-width: 150px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.suggestion {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.suggestion-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.suggestion-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .alert-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .alert-action {
+    width: 100%;
+    align-items: flex-start;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-glass);
+  }
+  
+  .suggestion {
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+}

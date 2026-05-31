@@ -1,0 +1,111 @@
+.table-container {
+  overflow-x: auto;
+  padding: 0; /* Override glass-card padding for flush table */
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.modern-table th {
+  padding: 16px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-glass);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.modern-table td {
+  padding: 16px 20px;
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--border-glass);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.modern-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.modern-table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.modern-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.stock-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.text-ok {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.text-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+}
+
+.text-critical {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--danger-color);
+}
+
+.actions-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-btn-small {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.icon-btn-small:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.success-hover:hover { color: var(--success-color); background: rgba(16, 185, 129, 0.1); }
+.warning-hover:hover { color: var(--warning-color); background: rgba(245, 158, 11, 0.1); }
+.primary-hover:hover { color: var(--accent-color); background: rgba(14, 165, 233, 0.1); }
+.danger-hover:hover { color: var(--danger-color); background: rgba(244, 63, 94, 0.1); }
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
