@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj": {}
+    "C:\\Users\\pedro.basilio\\.vscode\\Estoque-e-compras\\Estoque-compras-V2\\ApiEstoqueRoupas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj": {
+    "C:\\Users\\pedro.basilio\\.vscode\\Estoque-e-compras\\Estoque-compras-V2\\ApiEstoqueRoupas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",
+        "projectUniqueName": "C:\\Users\\pedro.basilio\\.vscode\\Estoque-e-compras\\Estoque-compras-V2\\ApiEstoqueRoupas.csproj",
         "projectName": "ApiEstoqueRoupas",
-        "projectPath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",
-        "packagesPath": "C:\\Users\\pepeh\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\obj\\",
+        "projectPath": "C:\\Users\\pedro.basilio\\.vscode\\Estoque-e-compras\\Estoque-compras-V2\\ApiEstoqueRoupas.csproj",
+        "packagesPath": "C:\\Users\\pedro.basilio\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\pedro.basilio\\.vscode\\Estoque-e-compras\\Estoque-compras-V2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\pepeh\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\pedro.basilio\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -24,6 +24,7 @@
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -38,10 +39,11 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
@@ -76,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

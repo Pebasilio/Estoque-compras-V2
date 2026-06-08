@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Bell, LogOut, Search, User } from 'lucide-react';
 import { authService } from '../../services/authService';
+import { produtoService } from '../../services/produtoService';
 import './Navbar.css';
 
 // ==========================================
@@ -12,12 +13,25 @@ const Navbar = () => {
   const navigate = useNavigate(); // Hook para mudar de página via código
   const location = useLocation(); // Hook para saber em qual URL estamos agora
   const [user, setUser] = useState({ name: 'Usuário', email: '' });
+  const [alertCount, setAlertCount] = useState(0);
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
     if (currentUser) {
       setUser(currentUser);
     }
+
+    // Busca os alertas dinamicamente ao carregar o Navbar
+    const fetchAlerts = async () => {
+      try {
+        const alerts = await produtoService.getAlertasReposicao();
+        setAlertCount(alerts.length);
+      } catch (error) {
+        console.error("Erro ao buscar alertas de reposição", error);
+      }
+    };
+    
+    fetchAlerts();
   }, []);
 
   // Função disparada no botão de "Sair"
@@ -50,9 +64,9 @@ const Navbar = () => {
           <input type="text" placeholder="Pesquisar..." className="search-input" />
         </div>
         
-        <button className="icon-btn notification-btn">
+        <button className="icon-btn notification-btn" onClick={() => navigate('/compras')} title="Ver Alertas de Reposição">
           <Bell size={20} />
-          <span className="badge">3</span>
+          {alertCount > 0 && <span className="badge">{alertCount}</span>}
         </button>
         
         <div className="user-profile">

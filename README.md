@@ -19,6 +19,7 @@ Projeto organizado em camadas:
 ├── Data/          # DatabaseHelper (System.Data.SQLite)
 ├── Database/      # Script SQL (schema.sql) para criação manual do banco
 ├── Postman/       # Coleção Postman para teste dos endpoints
+├── frontend/      # SPA em React + Vite (Interface do Usuário)
 ├── Program.cs     # Configuração, DI, seed do banco
 └── estoque.db     # Banco SQLite (gerado automaticamente no 1º run)
 ```
@@ -27,12 +28,19 @@ Fluxo: **Controller → Repository → DatabaseHelper → SQLite**
 
 ## Tecnologias
 
-- .NET 7 / C#
-- ASP.NET Core Web API (Controllers)
+**Backend:**
+- .NET 10 / C#
+- ASP.NET Core Web API
 - System.Data.SQLite (raw SQL)
 - Repository Pattern
+- Autenticação JWT
 - Swagger (Swashbuckle)
-- SQLite
+
+**Frontend:**
+- React 18 + Vite
+- React Router DOM
+- CSS Vanilla (Design System e Glassmorphism)
+- Lucide React (Ícones)
 
 ## Entidades e Relacionamentos
 
@@ -119,7 +127,7 @@ Fluxo: **Controller → Repository → DatabaseHelper → SQLite**
 
 ## Como Executar
 
-1. Instale o **.NET 7 SDK**.
+1. Instale o **.NET 10 SDK**.
 2. No diretório do projeto, execute:
 
 ```bash
@@ -175,7 +183,7 @@ Este repositório agora inclui uma aplicação **Single Page Application (SPA)**
 Para que a interface gráfica consiga ler o banco de dados SQLite, **é necessário rodar os dois servidores em terminais separados**.
 
 1. **Terminal 1 - Iniciar a API C#:**
-   Na pasta raiz do projeto (`Estoque-e-compras-main`), execute:
+   Na pasta raiz do projeto (`Estoque-compras-V2`), execute:
    ```bash
    dotnet run
    ```
