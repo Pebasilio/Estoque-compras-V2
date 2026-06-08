@@ -3,6 +3,10 @@ import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Package, ArchiveRestore, ShoppingCart } from 'lucide-react';
 import './Sidebar.css';
 
+// ==========================================
+// COMPONENTE SIDEBAR (Barra Lateral)
+// Aparece em todas as telas protegidas para garantir a navegação rápida.
+// ==========================================
 const Sidebar = () => {
   return (
     <aside className="sidebar">
@@ -14,6 +18,8 @@ const Sidebar = () => {
       </div>
       
       <nav className="sidebar-nav">
+        {/* NavLink é especial do React Router: ele sabe automaticamente quando 
+            estamos na página dele e ativa a classe 'active' para ficar aceso */}
         <NavLink to="/dashboard" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
           <LayoutDashboard size={20} />
           <span>Dashboard</span>

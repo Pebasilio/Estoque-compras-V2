@@ -190,3 +190,58 @@ Para que a interface gráfica consiga ler o banco de dados SQLite, **é necessá
    *(O site abrirá em `http://localhost:5173` ou similar)*
 
 A interface foi programada para capturar os retornos da API automaticamente. Se o C# não estiver rodando, você pode usar o modo "Mock Data" (dados de teste) alterando a constante `USE_MOCK_DATA` para `true` no arquivo `frontend/src/services/api.js`.
+## Autenticacao JWT
+
+O backend possui autenticacao JWT real usando `Microsoft.AspNetCore.Authentication.JwtBearer`.
+
+### Endpoint de login
+
+| Metodo | Rota              | Descricao                                 |
+|--------|-------------------|-------------------------------------------|
+| POST   | `/api/auth/login` | Valida credenciais e retorna um token JWT |
+
+Payload:
+
+```json
+{
+  "email": "admin@stockpro.com",
+  "password": "admin123"
+}
+```
+
+Resposta:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIs...",
+  "expiresAt": "2026-06-08T12:00:00Z",
+  "user": {
+    "name": "Administrador",
+    "email": "admin@stockpro.com",
+    "role": "Admin"
+  }
+}
+```
+
+### Fluxo completo
+
+1. O frontend envia e-mail e senha para `POST /api/auth/login`.
+2. O backend valida as credenciais e gera um JWT assinado com a chave configurada em `appsettings.json`.
+3. O frontend salva o token no `localStorage`.
+4. As chamadas feitas por `fetchWithAuth` enviam o header `Authorization: Bearer <token>`.
+5. Endpoints com `[Authorize]`, como `GET /api/stock/report`, respondem apenas quando o token e valido e nao expirou.
+
+### Credenciais de demonstracao
+
+| Perfil | E-mail | Senha |
+|--------|--------|-------|
+| Admin | `admin@stockpro.com` | `admin123` |
+| Gestor | `gestor@stockpro.com` | `gestor123` |
+
+### Endpoint protegido
+
+`GET /api/stock/report` esta protegido com `[Authorize]`. Para testar no Postman ou no frontend, primeiro faca login, copie o token retornado e envie:
+
+```http
+Authorization: Bearer <token>
+```

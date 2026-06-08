@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEstoqueRoupas.Controllers
 {
+    // ==========================================
+    // CONTROLADOR DE PRODUTOS
+    // Rota base: /api/products
+    // ==========================================
     [ApiController]
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
@@ -12,6 +16,7 @@ namespace ApiEstoqueRoupas.Controllers
         private readonly IProductRepository _repository;
         private readonly ICategoryRepository _categoryRepository;
 
+        // Injeta os dois repositórios, pois para criar um produto, precisamos verificar se a categoria dele realmente existe
         public ProductsController(IProductRepository repository, ICategoryRepository categoryRepository)
         {
             _repository = repository;
@@ -40,9 +45,11 @@ namespace ApiEstoqueRoupas.Controllers
             return Ok(products);
         }
 
+        // Rota: POST /api/products
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Product product)
         {
+            // Validações pesadas de Segurança e Negócio antes de chegar no Banco
             if (string.IsNullOrWhiteSpace(product.Name))
                 return BadRequest(new { message = "Nome é obrigatório." });
 
@@ -55,12 +62,16 @@ namespace ApiEstoqueRoupas.Controllers
             if (product.Price < 0)
                 return BadRequest(new { message = "Preço não pode ser negativo." });
 
+            // Verifica integridade referencial: a categoria escolhida no frontend existe no banco?
             var category = await _categoryRepository.GetByIdAsync(product.CategoryId);
             if (category is null)
                 return BadRequest(new { message = $"Categoria {product.CategoryId} não existe." });
 
+            // Evita salvar um objeto inteiro aninhado acidentalmente enviado pelo Frontend
             product.Category = null;
             var created = await _repository.AddAsync(product);
+            
+            // Retorna 201 Created apontando para a rota de busca por ID
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 

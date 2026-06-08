@@ -4,6 +4,10 @@ import { Package, LogIn, AlertCircle } from 'lucide-react';
 import { authService } from '../../services/authService';
 import './Login.css';
 
+// ==========================================
+// TELA DE LOGIN
+// A primeira tela que o usuário vê. Só sai daqui com a senha certa!
+// ==========================================
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -11,18 +15,22 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Função chamada quando o usuário clica no botão "Entrar" (Submit do formulário)
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Impede a página de recarregar "piscando"
     setError('');
     setLoading(true);
 
     try {
+      // Bate no serviço de autenticação
       await authService.login(email, password);
+      // Se deu certo (não caiu no catch), manda para o painel de controle
       navigate('/dashboard');
     } catch (err) {
+      // Se a senha estiver errada, a API do C# devolve um erro e a gente exibe na tela
       setError(err.message || 'Falha na autenticação. Verifique suas credenciais.');
     } finally {
-      setLoading(false);
+      setLoading(false); // Desliga a bolinha carregando independente se deu erro ou sucesso
     }
   };
 

@@ -1,11 +1,18 @@
 {
   "version": 2,
-  "dgSpecHash": "X7Az/hV9Xug=",
+  "dgSpecHash": "qVIJUMY1QlA=",
   "success": true,
   "projectFilePath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pepeh\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
+    "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.0\\microsoft.aspnetcore.authentication.jwtbearer.10.0.0.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.0.1\\microsoft.identitymodel.abstractions.8.0.1.nupkg.sha512",
+    "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.0.1\\microsoft.identitymodel.jsonwebtokens.8.0.1.nupkg.sha512",
+    "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.identitymodel.logging\\8.0.1\\microsoft.identitymodel.logging.8.0.1.nupkg.sha512",
+    "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.identitymodel.protocols\\8.0.1\\microsoft.identitymodel.protocols.8.0.1.nupkg.sha512",
+    "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\8.0.1\\microsoft.identitymodel.protocols.openidconnect.8.0.1.nupkg.sha512",
+    "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.0.1\\microsoft.identitymodel.tokens.8.0.1.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
@@ -26,6 +33,7 @@
     "C:\\Users\\pepeh\\.nuget\\packages\\system.data.sqlite.core\\1.0.118\\system.data.sqlite.core.1.0.118.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\system.data.sqlite.ef6\\1.0.118\\system.data.sqlite.ef6.1.0.118.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\system.drawing.common\\4.7.0\\system.drawing.common.4.7.0.nupkg.sha512",
+    "C:\\Users\\pepeh\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.0.1\\system.identitymodel.tokens.jwt.8.0.1.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\system.security.cryptography.protecteddata\\4.7.0\\system.security.cryptography.protecteddata.4.7.0.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\system.security.permissions\\4.7.0\\system.security.permissions.4.7.0.nupkg.sha512",
     "C:\\Users\\pepeh\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512"
@@ -34,7 +42,7 @@
     {
       "code": "NU1902",
       "level": "Warning",
-      "message": "Package 'System.Data.SqlClient' 4.8.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc",
+      "message": "O pacote 'System.Data.SqlClient' 4.8.1 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc",
       "projectPath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",
@@ -46,7 +54,7 @@
     {
       "code": "NU1903",
       "level": "Warning",
-      "message": "Package 'System.Data.SqlClient' 4.8.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-98g6-xh36-x2p7",
+      "message": "O pacote 'System.Data.SqlClient' 4.8.1 tem uma alta vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-98g6-xh36-x2p7",
       "projectPath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",
@@ -58,7 +66,7 @@
     {
       "code": "NU1904",
       "level": "Warning",
-      "message": "Package 'System.Drawing.Common' 4.7.0 has a known critical severity vulnerability, https://github.com/advisories/GHSA-rxg9-xrhp-64gj",
+      "message": "O pacote 'System.Drawing.Common' 4.7.0 tem uma crítico vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-rxg9-xrhp-64gj",
       "projectPath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Users\\pepeh\\.vscode\\Estoque-e-compras-main\\ApiEstoqueRoupas.csproj",

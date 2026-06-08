@@ -4,9 +4,13 @@ import { Bell, LogOut, Search, User } from 'lucide-react';
 import { authService } from '../../services/authService';
 import './Navbar.css';
 
+// ==========================================
+// COMPONENTE NAVBAR (Barra Superior)
+// Mostra em que tela estamos e quem está logado
+// ==========================================
 const Navbar = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate(); // Hook para mudar de página via código
+  const location = useLocation(); // Hook para saber em qual URL estamos agora
   const [user, setUser] = useState({ name: 'Usuário', email: '' });
 
   useEffect(() => {
@@ -16,11 +20,13 @@ const Navbar = () => {
     }
   }, []);
 
+  // Função disparada no botão de "Sair"
   const handleLogout = () => {
-    authService.logout();
-    navigate('/login');
+    authService.logout(); // Limpa o cache
+    navigate('/login'); // Joga o usuário pra fora
   };
 
+  // Switch case disfarçado para mudar o título grandão no topo da tela dinamicamente
   const getPageTitle = () => {
     const path = location.pathname;
     if (path.includes('/dashboard')) return 'Visão Geral';

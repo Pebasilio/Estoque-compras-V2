@@ -8,6 +8,10 @@ using ApiEstoqueRoupas.Models;
 
 namespace ApiEstoqueRoupas.Repositories
 {
+    // ==========================================
+    // REPOSITÓRIO DE CATEGORIAS
+    // Executa operações relacionadas às Categorias e seus vínculos
+    // ==========================================
     public class CategoryRepository : ICategoryRepository
     {
         private readonly DatabaseHelper _databaseHelper;
@@ -17,6 +21,8 @@ namespace ApiEstoqueRoupas.Repositories
             _databaseHelper = databaseHelper;
         }
 
+        // Carrega todas as categorias.
+        // Além da categoria, ele executa uma segunda query (loop) para preencher os produtos dentro de cada categoria (Eager Loading manual)
         public async Task<List<Category>> GetAllAsync()
         {
             var categories = new List<Category>();
@@ -169,13 +175,14 @@ namespace ApiEstoqueRoupas.Repositories
             }
         }
 
+        // Deleta uma categoria se (e somente se) não houver produtos associados a ela
         public async Task<bool> DeleteAsync(int id)
         {
             using (var connection = _databaseHelper.GetConnection())
             {
                 await connection.OpenAsync();
 
-                // Check if category has products
+                // Passo 1: Verifica se existem produtos usando esta categoria
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT COUNT(*) FROM Products WHERE CategoryId = @CategoryId";

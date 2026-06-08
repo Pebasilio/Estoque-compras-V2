@@ -3,6 +3,10 @@ import { ShoppingCart, CheckCircle } from 'lucide-react';
 import { produtoService } from '../../services/produtoService';
 import './Compras.css';
 
+// ==========================================
+// TELA DE COMPRAS / REPOSIÇÃO
+// A tela inteligente que sugere o que comprar baseado nos cálculos lá do C#
+// ==========================================
 const Compras = () => {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,20 +28,25 @@ const Compras = () => {
     }
   };
 
+  // Função que simula que a loja ligou para o fornecedor e a roupa chegou instantaneamente
   const handleSimulatePurchase = async (productId, suggestedQty) => {
+    // Altera o botão específico desse produto para "Carregando" (pra ficar mais Premium)
     setBuyingStatus(prev => ({ ...prev, [productId]: 'loading' }));
     
     try {
-      // Usamos a API de entrada para simular a chegada dos produtos comprados
+      // Usamos a API de Entrada (a mesma da tela Estoque) para dar a entrada "invisível" desses itens
       await produtoService.registraEntrada(productId, suggestedQty, 'Compra Automática Reposição', 'Sistema');
+      
+      // Muda o botão para "Sucesso!" verdinho
       setBuyingStatus(prev => ({ ...prev, [productId]: 'success' }));
       
-      // Remover alerta da lista após 2 segundos
+      // Mágica de UI: Dá 2 segundos para o gestor ler o "Comprado" antes de remover o card da tela sozinho
       setTimeout(() => {
         setAlerts(prev => prev.filter(a => a.product.id !== productId));
       }, 2000);
       
     } catch (error) {
+      // Se der pau, volta o botão normal
       setBuyingStatus(prev => ({ ...prev, [productId]: 'error' }));
       alert('Falha ao simular compra.');
     }

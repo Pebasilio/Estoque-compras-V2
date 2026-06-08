@@ -13,10 +13,17 @@ import EditarProduto from '../pages/EditarProduto/EditarProduto';
 import Estoque from '../pages/Estoque/Estoque';
 import Compras from '../pages/Compras/Compras';
 
+// ==========================================
+// GERENCIADOR DE ROTAS
+// ==========================================
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Rota Pública: Qualquer um pode acessar (A tela de Login) */}
       <Route path="/login" element={<Login />} />
+      
+      {/* Rotas Protegidas: O "ProtectedRoute" é um guardião. 
+          Se o cara tentar acessar /produtos sem login, é expulso de volta para o /login */}
       
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -30,7 +37,7 @@ const AppRoutes = () => {
         <Route path="/compras" element={<Compras />} />
       </Route>
       
-      {/* Catch all */}
+      {/* Catch all: Se digitar uma URL maluca (ex: /batata), joga direto pro dashboard de forma segura */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );

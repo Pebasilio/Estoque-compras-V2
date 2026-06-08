@@ -9,8 +9,13 @@ using ApiEstoqueRoupas.Models;
 
 namespace ApiEstoqueRoupas.Repositories
 {
+    // ==========================================
+    // REPOSITÓRIO DE PRODUTOS
+    // Contém as queries de SQL puro (Raw SQL) para fazer o CRUD no banco SQLite
+    // ==========================================
     public class ProductRepository : IProductRepository
     {
+        // Instância do ajudante que gerencia e entrega novas conexões
         private readonly DatabaseHelper _databaseHelper;
 
         public ProductRepository(DatabaseHelper databaseHelper)
@@ -18,9 +23,11 @@ namespace ApiEstoqueRoupas.Repositories
             _databaseHelper = databaseHelper;
         }
 
+        // Busca todos os produtos usando um 'JOIN' para trazer já o nome da Categoria junto
         public async Task<List<Product>> GetAllAsync()
         {
             var products = new List<Product>();
+            // Abre a conexão com o banco
             using (var connection = _databaseHelper.GetConnection())
             {
                 await connection.OpenAsync();
@@ -73,6 +80,7 @@ namespace ApiEstoqueRoupas.Repositories
             return null;
         }
 
+        // Uma das funções mais importantes do sistema: Busca APENAS produtos com estoque em perigo
         public async Task<List<Product>> GetLowStockAsync()
         {
             var products = new List<Product>();
@@ -101,6 +109,8 @@ namespace ApiEstoqueRoupas.Repositories
             return products;
         }
 
+        // Insere um novo produto no banco.
+        // Utiliza parâmetros nomeados (@Name, @Price) para evitar vulnerabilidades de "SQL Injection"
         public async Task<Product> AddAsync(Product product)
         {
             using (var connection = _databaseHelper.GetConnection())
@@ -111,6 +121,7 @@ namespace ApiEstoqueRoupas.Repositories
                     command.CommandText = @"
                         INSERT INTO Products (Name, Quantity, ReorderThreshold, Price, CategoryId)
                         VALUES (@Name, @Quantity, @ReorderThreshold, @Price, @CategoryId);
+                        -- Após inserir, retorna o ID gerado automaticamente
                         SELECT last_insert_rowid();";
 
                     command.Parameters.AddWithValue("@Name", product.Name);

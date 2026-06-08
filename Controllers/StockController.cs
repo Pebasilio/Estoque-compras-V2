@@ -3,10 +3,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiEstoqueRoupas.Models;
 using ApiEstoqueRoupas.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEstoqueRoupas.Controllers
 {
+    // ==========================================
+    // CONTROLADOR DE OPERAÇÕES DE ESTOQUE
+    // Rota base: /api/stock
+    // Onde a mágica (e a lógica de negócios complexa) acontece!
+    // ==========================================
     [ApiController]
     [Route("api/[controller]")]
     public class StockController : ControllerBase
@@ -14,12 +20,15 @@ namespace ApiEstoqueRoupas.Controllers
         private readonly IProductRepository _productRepository;
         private readonly IStockMovementRepository _movementRepository;
 
+        // Injeta Produto e Movimentação, pois sempre que mexemos no estoque, mexemos nas duas tabelas
         public StockController(IProductRepository productRepository, IStockMovementRepository movementRepository)
         {
             _productRepository = productRepository;
             _movementRepository = movementRepository;
         }
 
+        // Rota: POST /api/stock/entry
+        // Dá entrada no estoque de um produto e gera o histórico
         [HttpPost("entry")]
         public async Task<IActionResult> Entry([FromBody] StockEntryRequest request)
         {
@@ -30,20 +39,24 @@ namespace ApiEstoqueRoupas.Controllers
             if (product is null)
                 return NotFound(new { message = "Produto não encontrado." });
 
+            // 1) Prepara o "recibo" (histórico) da movimentação
             var movement = new StockMovement
             {
                 ProductId = product.Id,
                 ProductName = product.Name,
                 Type = MovementType.ENTRADA,
                 Quantity = request.Quantity,
-                StockBefore = product.Quantity,
-                StockAfter = product.Quantity + request.Quantity,
+                StockBefore = product.Quantity, // Salva uma "foto" de como estava o saldo antes
+                StockAfter = product.Quantity + request.Quantity, // Como vai ficar o saldo depois
                 Reason = request.Reason,
                 User = request.User,
                 Date = DateTime.Now
             };
 
+            // 2) Efetiva a mudança somando no saldo atual do produto
             product.Quantity += request.Quantity;
+            
+            // 3) Salva tudo no banco de dados
             await _productRepository.UpdateAsync(product);
             await _movementRepository.AddAsync(movement);
 
@@ -58,6 +71,8 @@ namespace ApiEstoqueRoupas.Controllers
             });
         }
 
+        // Rota: POST /api/stock/exit
+        // Retira produtos do estoque (Ex: Venda, Avaria)
         [HttpPost("exit")]
         public async Task<IActionResult> Exit([FromBody] StockExitRequest request)
         {
@@ -68,6 +83,7 @@ namespace ApiEstoqueRoupas.Controllers
             if (product is null)
                 return NotFound(new { message = "Produto não encontrado." });
 
+            // REGRA DE NEGÓCIO CRÍTICA: Travar saída se o cliente tentar tirar mais do que possui (Evita estoque negativo)
             if (product.Quantity < request.Quantity)
                 return BadRequest(new { message = $"Estoque insuficiente. Disponível: {product.Quantity}" });
 
@@ -125,11 +141,15 @@ namespace ApiEstoqueRoupas.Controllers
             return Ok(movements);
         }
 
+        // Rota: GET /api/stock/restock-alerts
+        // Motor inteligente que calcula quanto o gestor precisa comprar com base no "Limiar de Reposição" (ReorderThreshold)
         [HttpGet("restock-alerts")]
         public async Task<IActionResult> RestockAlerts()
         {
+            // Puxa do banco APENAS os itens que o estoque <= Limite de Risco
             var products = await _productRepository.GetLowStockAsync();
 
+            // Mapeia e calcula a recomendação de compra para cada um
             var alerts = products.Select(p => new RestockAlert
             {
                 ProductId = p.Id,
@@ -137,13 +157,19 @@ namespace ApiEstoqueRoupas.Controllers
                 Category = p.Category?.Name ?? string.Empty,
                 CurrentStock = p.Quantity,
                 ReorderThreshold = p.ReorderThreshold,
+                
+                // CÁLCULO DE COMPRA: Exemplo, se o Limite é 5, e eu tenho 2 no estoque:
+                // (5 * 3) - 2 = 15 - 2 = Sugere comprar 13 peças! 
+                // Assim o estoque sobe para 15 (Ficando confortavelmente acima da zona de risco)
                 SuggestedOrderQuantity = (p.ReorderThreshold * 3) - p.Quantity,
-                AlertLevel = p.Quantity == 0 ? "CRITICAL" : "WARNING"
+                
+                AlertLevel = p.Quantity == 0 ? "CRITICAL" : "WARNING" // Se estiver 0 absoluto, é crítico
             }).OrderBy(a => a.CurrentStock).ToList();
 
             return Ok(new { count = alerts.Count, alerts });
         }
 
+        [Authorize]
         [HttpGet("report")]
         public async Task<IActionResult> Report()
         {

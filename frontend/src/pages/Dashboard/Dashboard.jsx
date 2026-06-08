@@ -6,6 +6,10 @@ import ProductTable from '../../components/ProductTable/ProductTable';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
+// ==========================================
+// TELA DE PAINEL DE CONTROLE (Visão Geral)
+// Aqui concentramos todas as informações numéricas essenciais do negócio
+// ==========================================
 const Dashboard = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
@@ -18,18 +22,24 @@ const Dashboard = () => {
   const [recentProducts, setRecentProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // O useEffect roda magicamente 1 ÚNICA VEZ assim que a tela abre, graças ao array vazio [] no final
   useEffect(() => {
     loadDashboardData();
   }, []);
 
+  // Função assíncrona para buscar os dados de dois lugares da API de uma só vez
   const loadDashboardData = async () => {
     setLoading(true);
     try {
+      // Requisição 1: Puxa a lista de produtos
       const produtos = await produtoService.getProdutos();
+      // Requisição 2: Puxa os alertas inteligentes de itens que acabaram
       const lowStockAlerts = await produtoService.getAlertasReposicao();
       
+      // Cálculo JS: Descobre quanto dinheiro tem parado no estoque
       const valTotal = produtos.reduce((acc, p) => acc + (p.price * p.quantity), 0);
       
+      // Atualiza os blocos superiores visuais
       setStats({
         totalProducts: produtos.length,
         lowStockCount: lowStockAlerts.length,
@@ -37,8 +47,8 @@ const Dashboard = () => {
         recentMovements: 12 // Placeholder para movimentações do dia
       });
       
-      setAlerts(lowStockAlerts.slice(0, 3)); // Pega os 3 piores alertas
-      setRecentProducts(produtos.slice(0, 5)); // Pega 5 produtos
+      setAlerts(lowStockAlerts.slice(0, 3)); // Pega os 3 piores alertas (Fila de Prioridade)
+      setRecentProducts(produtos.slice(0, 5)); // Pega apenas 5 produtos para a tabelinha rápida
     } catch (error) {
       console.error('Erro ao carregar dashboard', error);
     } finally {

@@ -1,27 +1,74 @@
 using ApiEstoqueRoupas.Data;
 using ApiEstoqueRoupas.Models;
 using ApiEstoqueRoupas.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using System.Data.SQLite;
+using System.Text;
 
+// ==========================================
+// ARQUIVO PRINCIPAL DO BACKEND (Ponto de Entrada)
+// ==========================================
+
+// Inicia o construtor da aplicação web usando o padrão mínimo do ASP.NET Core
 var builder = WebApplication.CreateBuilder(args);
 
+// Define onde o banco de dados SQLite será criado (na raiz do projeto como 'estoque.db')
 var connectionString = "Data Source=estoque.db";
 
+// ==========================================
+// INJEÇÃO DE DEPENDÊNCIA (Dependency Injection)
+// Ensina ao C# como criar as classes quando os Controllers pedirem.
+// ==========================================
+// AddSingleton: Cria uma única instância (Global) que dura a vida toda da API. Perfeito para a string de conexão.
 builder.Services.AddSingleton(new DatabaseHelper(connectionString));
+
+// AddScoped: Cria uma nova instância por cada requisição HTTP recebida. Ideal para Repositórios.
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IStockMovementRepository, StockMovementRepository>();
 
+// ==========================================
+// CONFIGURAÇÕES DA API (Controllers, JSON e CORS)
+// ==========================================
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        // Evita loops infinitos ao serializar objetos (ex: Produto tem Categoria que tem Produto que tem Categoria...)
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        
+        // Transforma Enum's em Texto (ex: "ENTRADA") ao invés de números (1 ou 2) na hora de devolver no JSON
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 
+// Ativa o Swagger (Página bonita de documentação /swagger para testar a API)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key não configurada.");
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// Permite que sites em outras portas (como o React na 5173) consigam chamar a nossa API na porta 5123
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -31,13 +78,18 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
+// "Constrói" o aplicativo e finaliza as configurações
 var app = builder.Build();
 
-// Initialize database
+// ==========================================
+// INICIALIZAÇÃO DE DADOS (Seeding)
+// ==========================================
+
+// Solicita a classe DatabaseHelper recém criada e executa o CREATE TABLE das tabelas
 var databaseHelper = app.Services.GetRequiredService<DatabaseHelper>();
 databaseHelper.Initialize();
 
-// Seed initial data if empty
+// Rotina para popular dados iniciais automaticamente se o banco estiver 100% vazio
 using (var connection = new SQLiteConnection(connectionString))
 {
     connection.Open();
@@ -120,19 +172,25 @@ using (var connection = new SQLiteConnection(connectionString))
     }
 }
 
+// ==========================================
+// MIDDLEWARES E EXECUÇÃO
+// ==========================================
+
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(); // Gera a interface gráfica do Swagger no navegador
 
-app.UseCors("AllowAll");
+app.UseCors("AllowAll"); // Libera o acesso CORS configurado lá em cima
 
-app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 
+app.MapControllers(); // Mapeia todos as rotas definidas nos arquivos Controllers/
+
+// Mensagens no terminal para ajudar o desenvolvedor a encontrar as URLs
 Console.WriteLine("\nSERVIDOR RODANDO");
 Console.WriteLine("  Swagger:    http://localhost:5123/swagger");
 Console.WriteLine("  Produtos:   http://localhost:5123/api/products");
 Console.WriteLine("  Categorias: http://localhost:5123/api/categories");
 Console.WriteLine("  Estoque:    http://localhost:5123/api/stock/...\n");
 
-app.Run();
-
-app.Run();
+app.Run(); // Coloca a API no ar para começar a receber requisições!

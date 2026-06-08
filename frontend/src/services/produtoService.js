@@ -1,17 +1,25 @@
 import { fetchWithAuth, USE_MOCK_DATA } from './api';
 
-// MOCK DATA PARA TESTE ISOLADO DO FRONTEND
+// ==========================================
+// MOCK DATA (O Plano B)
+// Usado caso a flag USE_MOCK_DATA do arquivo api.js esteja ligada.
+// Muito útil se você for apresentar o layout para alguém mas estiver sem o C# rodando.
+// ==========================================
 const MOCK_PRODUCTS = [
   { id: 1, name: "Camiseta Algodão", categoryId: 1, category: { name: "Camisetas" }, quantity: 45, reorderThreshold: 20, price: 59.90, stockStatus: "OK" },
   { id: 2, name: "Calça Jeans Slim", categoryId: 2, category: { name: "Calças" }, quantity: 8, reorderThreshold: 15, price: 129.90, stockStatus: "ESTOQUE_BAIXO" },
   { id: 3, name: "Jaqueta Couro", categoryId: 3, category: { name: "Casacos" }, quantity: 0, reorderThreshold: 5, price: 399.90, stockStatus: "SEM_ESTOQUE" },
 ];
 
+// ==========================================
+// SERVIÇO DE PRODUTOS E ESTOQUE
+// O elo de ligação entre as Telas de Produto/Estoque e a API C#
+// ==========================================
 export const produtoService = {
-  // GET: Obter todos os produtos
+  // GET: Obter todos os produtos listados
   async getProdutos() {
     if (USE_MOCK_DATA) return Promise.resolve(MOCK_PRODUCTS);
-    return fetchWithAuth('/products');
+    return fetchWithAuth('/products'); // O fetchWithAuth já embute o Token de forma mágica!
   },
 
   // GET: Obter produto específico

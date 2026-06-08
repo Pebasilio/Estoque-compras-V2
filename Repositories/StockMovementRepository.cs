@@ -9,6 +9,10 @@ using ApiEstoqueRoupas.Models;
 
 namespace ApiEstoqueRoupas.Repositories
 {
+    // ==========================================
+    // REPOSITÓRIO DE MOVIMENTAÇÃO DE ESTOQUE
+    // Controla o "Livro Razão" ou diário de tudo que entra e sai.
+    // ==========================================
     public class StockMovementRepository : IStockMovementRepository
     {
         private readonly DatabaseHelper _databaseHelper;
@@ -18,8 +22,10 @@ namespace ApiEstoqueRoupas.Repositories
             _databaseHelper = databaseHelper;
         }
 
+        // Registra uma nova movimentação. Os dados da movimentação são IMUTÁVEIS (não existe função 'Update' para o histórico).
         public async Task<StockMovement> AddAsync(StockMovement movement)
         {
+            // Força a data atual na hora de salvar
             movement.Date = DateTime.Now;
 
             using (var connection = _databaseHelper.GetConnection())
@@ -114,9 +120,11 @@ namespace ApiEstoqueRoupas.Repositories
             return movements;
         }
 
+        // Gera o relatório restrito às movimentações que aconteceram HOJE (para a tela inicial do Dashboard)
         public async Task<List<StockMovement>> GetTodayAsync()
         {
             var movements = new List<StockMovement>();
+            // Pega as extremidades do dia de hoje (00:00 até amanhã 00:00) para criar o intervalo seguro no banco
             var today = DateTime.Today;
             var tomorrow = today.AddDays(1);
 

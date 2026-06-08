@@ -4,6 +4,10 @@ import ProductTable from '../../components/ProductTable/ProductTable';
 import { X } from 'lucide-react';
 import './Estoque.css';
 
+// ==========================================
+// TELA DE ESTOQUE (Movimentações de Entrada e Saída)
+// Tela essencial que controla o Modal (A janelinha que pula na tela)
+// ==========================================
 const Estoque = () => {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,25 +34,29 @@ const Estoque = () => {
     }
   };
 
+  // Função que ACORDA a janelinha Modal e configura ela pra "Entrada" ou "Saída"
   const openModal = (product, type) => {
-    setSelectedProduct(product);
-    setModalType(type);
-    setForm({ quantity: 1, reason: '', user: '' });
-    setModalOpen(true);
+    setSelectedProduct(product); // Guarda qual produto clicamos
+    setModalType(type); // 'entry' | 'exit'
+    setForm({ quantity: 1, reason: '', user: '' }); // Reseta o form para não vir lixo
+    setModalOpen(true); // O estado muda, e o React renderiza a caixa preta na tela!
   };
 
+  // Quando o cara clica em "Confirmar" dentro da Modal
   const handleStockAction = async (e) => {
     e.preventDefault();
     if (!selectedProduct) return;
 
     try {
       if (modalType === 'entry') {
+        // Envia os dados para a API (Post /api/stock/entry)
         await produtoService.registraEntrada(selectedProduct.id, form.quantity, form.reason, form.user);
       } else {
+        // Envia os dados para a API (Post /api/stock/exit)
         await produtoService.registraSaida(selectedProduct.id, form.quantity, form.reason, form.user);
       }
-      setModalOpen(false);
-      loadProdutos(); // Recarrega lista
+      setModalOpen(false); // Fecha a janelinha
+      loadProdutos(); // Recarrega a tabela de fundo pra mostrar o novo número
     } catch (error) {
       alert(`Erro ao registrar ${modalType === 'entry' ? 'entrada' : 'saída'}. Verifique o estoque atual.`);
     }
