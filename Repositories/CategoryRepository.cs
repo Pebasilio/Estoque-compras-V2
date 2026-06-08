@@ -14,8 +14,10 @@ namespace ApiEstoqueRoupas.Repositories
     // ==========================================
     public class CategoryRepository : ICategoryRepository
     {
+        // Referência ao helper que fornece novas conexões com o banco SQLite
         private readonly DatabaseHelper _databaseHelper;
 
+        // Construtor: recebe o DatabaseHelper via injeção de dependência
         public CategoryRepository(DatabaseHelper databaseHelper)
         {
             _databaseHelper = databaseHelper;
@@ -46,7 +48,7 @@ namespace ApiEstoqueRoupas.Repositories
                     }
                 }
 
-                // Load products for each category
+                // Carrega os produtos vinculados a cada categoria (simula o "Include" do Entity Framework)
                 foreach (var category in categories)
                 {
                     using (var command = connection.CreateCommand())
@@ -81,6 +83,8 @@ namespace ApiEstoqueRoupas.Repositories
             return categories;
         }
 
+        // Busca uma única categoria pelo ID, incluindo seus produtos vinculados
+        // Retorna null se a categoria não existir no banco
         public async Task<Category?> GetByIdAsync(int id)
         {
             using (var connection = _databaseHelper.GetConnection())
@@ -88,9 +92,11 @@ namespace ApiEstoqueRoupas.Repositories
                 await connection.OpenAsync();
                 Category? category = null;
 
+                // Consulta a tabela Categories buscando pelo ID parametrizado
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT Id, Name FROM Categories WHERE Id = @Id";
+                    // Parâmetro nomeado previne SQL Injection
                     command.Parameters.AddWithValue("@Id", id);
 
                     using (var reader = await command.ExecuteReaderAsync())
@@ -102,9 +108,10 @@ namespace ApiEstoqueRoupas.Repositories
                     }
                 }
 
+                // Se a categoria não foi encontrada, retorna null imediatamente
                 if (category == null) return null;
 
-                // Load products
+                // Carrega os produtos pertencentes a esta categoria
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = @"
@@ -137,6 +144,7 @@ namespace ApiEstoqueRoupas.Repositories
             }
         }
 
+        // Insere uma nova categoria no banco e retorna o objeto com o ID gerado
         public async Task<Category> AddAsync(Category category)
         {
             using (var connection = _databaseHelper.GetConnection())
@@ -151,13 +159,16 @@ namespace ApiEstoqueRoupas.Repositories
 
                     command.Parameters.AddWithValue("@Name", category.Name);
 
+                    // Insere a categoria e recupera o ID gerado automaticamente pelo SQLite
                     var id = (long)await command.ExecuteScalarAsync();
+                    // Atribui o ID gerado ao objeto para devolver ao Controller com a informação completa
                     category.Id = (int)id;
                 }
             }
             return category;
         }
 
+        // Atualiza o nome de uma categoria existente. Retorna true se alguma linha foi afetada
         public async Task<bool> UpdateAsync(Category category)
         {
             using (var connection = _databaseHelper.GetConnection())
@@ -169,6 +180,8 @@ namespace ApiEstoqueRoupas.Repositories
                     command.Parameters.AddWithValue("@Name", category.Name);
                     command.Parameters.AddWithValue("@Id", category.Id);
 
+                    // Executa o UPDATE e verifica se alguma linha foi afetada
+                    // Se result > 0, significa que a categoria foi encontrada e atualizada com sucesso
                     var result = await command.ExecuteNonQueryAsync();
                     return result > 0;
                 }
@@ -192,25 +205,28 @@ namespace ApiEstoqueRoupas.Repositories
                     if (count > 0) return false;
                 }
 
-                // Delete category
+                // Passo 2: Se não há produtos vinculados, prossegue com a exclusão da categoria
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "DELETE FROM Categories WHERE Id = @Id";
                     command.Parameters.AddWithValue("@Id", id);
 
+                    // Retorna true se alguma linha foi realmente removida
                     var result = await command.ExecuteNonQueryAsync();
                     return result > 0;
                 }
             }
         }
 
+        // Método utilitário privado que converte uma linha do banco (DbDataReader) em um objeto Category
+        // Centraliza a lógica de mapeamento para evitar duplicação de código
         private Category MapCategory(DbDataReader reader)
         {
             return new Category
             {
-                Id = reader.GetInt32(0),
-                Name = reader.GetString(1),
-                Products = new List<Product>()
+                Id = reader.GetInt32(0),      // Coluna 0 = Id
+                Name = reader.GetString(1),    // Coluna 1 = Name
+                Products = new List<Product>() // Inicializa a lista vazia (será preenchida depois, se necessário)
             };
         }
     }

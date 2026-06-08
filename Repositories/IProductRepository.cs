@@ -9,14 +9,19 @@ namespace ApiEstoqueRoupas.Repositories
     // ==========================================
     public interface IProductRepository
     {
+        // Retorna todos os produtos cadastrados, incluindo dados da categoria vinculada
         Task<List<Product>> GetAllAsync();
+        // Busca um produto pelo ID. Retorna null se o produto não existir
         Task<Product?> GetByIdAsync(int id);
         
         // Método especializado para o Dashboard: Filtra diretamente no banco produtos que precisam de reposição
         Task<List<Product>> GetLowStockAsync();
         
+        // Insere um novo produto no banco e retorna o objeto com o ID gerado
         Task<Product> AddAsync(Product product);
+        // Atualiza os dados de um produto existente. Retorna true se conseguiu atualizar
         Task<bool> UpdateAsync(Product product);
+        // Remove um produto pelo ID. Retorna true se o produto foi encontrado e excluído
         Task<bool> DeleteAsync(int id);
         
         // Retorna apenas um booleano (true/false) para checagens rápidas se o produto existe, sem carregar seus dados na memória

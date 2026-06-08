@@ -1,17 +1,25 @@
+/* ==========================================
+   ESTILOS DO COMPONENTE SIDEBAR (Barra Lateral)
+   Menu de navegação lateral fixo à esquerda com logo, links e versão.
+   Em telas pequenas, transforma-se em uma barra horizontal no topo.
+   ========================================== */
+
+/* --- Container principal da sidebar (ocupa toda a altura da tela) --- */
 .sidebar {
   width: 260px;
   background-color: var(--bg-secondary);
-  border-right: 1px solid var(--border-glass);
+  border-right: 1px solid var(--border-glass); /* Separador entre sidebar e conteúdo */
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  position: sticky;
+  height: 100vh; /* Ocupa 100% da altura da viewport */
+  position: sticky; /* Fica fixa ao rolar a página */
   top: 0;
-  transition: width var(--transition-normal);
+  transition: width var(--transition-normal); /* Animação suave caso a largura mude */
 }
 
+/* --- Cabeçalho da sidebar (logo + nome do sistema) --- */
 .sidebar-header {
-  height: 70px;
+  height: 70px; /* Mesma altura da navbar para alinhar horizontalmente */
   display: flex;
   align-items: center;
   padding: 0 24px;
@@ -19,6 +27,7 @@
   gap: 12px;
 }
 
+/* Container do ícone do logo com fundo azul semi-transparente */
 .logo-icon {
   display: flex;
   align-items: center;
@@ -29,6 +38,7 @@
   border-radius: var(--radius-sm);
 }
 
+/* Nome do sistema "StockPro" */
 .sidebar-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
@@ -36,14 +46,16 @@
   color: var(--text-primary);
 }
 
+/* --- Área de navegação (lista de links) --- */
 .sidebar-nav {
-  flex: 1;
+  flex: 1; /* Ocupa todo o espaço disponível entre cabeçalho e rodapé */
   padding: 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+/* --- Cada item de navegação (link + ícone) --- */
 .nav-item {
   display: flex;
   align-items: center;
@@ -56,47 +68,55 @@
   transition: all var(--transition-fast);
 }
 
+/* Efeito hover: muda fundo e cor do texto */
 .nav-item:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
 }
 
+/* Item ativo (página atual): destaque com gradiente e sombra */
 .nav-item.active {
   background: var(--accent-gradient);
   color: #fff;
   box-shadow: var(--shadow-md);
 }
 
+/* --- Rodapé da sidebar (versão do sistema) --- */
 .sidebar-footer {
   padding: 20px;
   border-top: 1px solid var(--border-glass);
   text-align: center;
 }
 
+/* Texto da versão discreto */
 .version {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
 
+/* --- Responsivo: transforma em barra horizontal no mobile --- */
 @media (max-width: 768px) {
   .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
+    width: 100%;        /* Ocupa toda a largura */
+    height: auto;        /* Altura se adapta ao conteúdo */
+    position: relative;  /* Não fica mais sticky */
     border-right: none;
     border-bottom: 1px solid var(--border-glass);
   }
   
+  /* Navegação vira horizontal com scroll */
   .sidebar-nav {
     flex-direction: row;
-    overflow-x: auto;
+    overflow-x: auto; /* Permite scroll horizontal se houver muitos itens */
     padding: 12px;
   }
   
+  /* Esconde o texto dos links, mostrando apenas os ícones */
   .nav-item span {
     display: none;
   }
   
+  /* Esconde o rodapé de versão no mobile */
   .sidebar-footer {
     display: none;
   }

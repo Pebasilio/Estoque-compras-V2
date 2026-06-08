@@ -45,27 +45,39 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ==========================================
+// CONFIGURAÇÃO DE AUTENTICAÇÃO JWT (JSON Web Token)
+// O JWT é o "crachá digital" que o usuário recebe ao fazer login.
+// A cada requisição, ele envia esse token para provar que já se autenticou.
+// ==========================================
+
+// Lê a chave secreta usada para assinar os tokens (deve estar em appsettings.json)
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key não configurada.");
+// Emissor (quem gerou o token) e audiência (para quem o token serve)
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
 
+// Registra o esquema de autenticação via Bearer Token (padrão JWT)
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        // Define as regras de validação do token recebido em cada requisição
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,           // Verifica se o emissor do token é confiável
+            ValidateAudience = true,         // Verifica se o token foi destinado a esta API
+            ValidateLifetime = true,         // Rejeita tokens expirados automaticamente
+            ValidateIssuerSigningKey = true,  // Valida que a assinatura do token é legítima
             ValidIssuer = jwtIssuer,
             ValidAudience = jwtAudience,
+            // Converte a chave secreta de string para bytes para poder assinar/verificar criptograficamente
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero        // Remove a margem de tolerância padrão de 5 minutos na expiração
         };
     });
 
+// Habilita o serviço de autorização (controle de permissões por Role: Admin, Manager, etc.)
 builder.Services.AddAuthorization();
 
 // Permite que sites em outras portas (como o React na 5173) consigam chamar a nossa API na porta 5123
@@ -95,27 +107,31 @@ using (var connection = new SQLiteConnection(connectionString))
     connection.Open();
     using (var command = connection.CreateCommand())
     {
+        // Verifica se a tabela de categorias está vazia para decidir se deve popular dados iniciais
         command.CommandText = "SELECT COUNT(*) FROM Categories";
         var count = (long)command.ExecuteScalar();
 
         if (count == 0)
         {
-            // Add categories
+            // Insere as categorias iniciais no banco e armazena seus IDs gerados
             var categories = new[] { "Camisas", "Jaquetas", "Calças", "Meias" };
+            // Dicionário para mapear o nome da categoria ao seu ID gerado, usado depois ao inserir produtos
             var categoryIds = new Dictionary<string, int>();
 
             foreach (var categoryName in categories)
             {
                 using (var cmd = connection.CreateCommand())
                 {
+                    // Insere a categoria e recupera o ID auto-incrementado pelo SQLite
                     cmd.CommandText = "INSERT INTO Categories (Name) VALUES (@Name); SELECT last_insert_rowid();";
                     cmd.Parameters.AddWithValue("@Name", categoryName);
                     var id = (long)cmd.ExecuteScalar();
-                    categoryIds[categoryName] = (int)id;
+                    categoryIds[categoryName] = (int)id; // Guarda para vincular aos produtos depois
                 }
             }
 
-            // Add products
+            // Dados pré-definidos (Seed Data): lista de produtos fictícios para demonstração
+            // Formato: (nome, categoria, quantidade, limiar de reposição, preço unitário)
             var produtosIniciais = new List<(string name, string category, int quantity, int reorderThreshold, decimal price)>
             {
                 ("Camisa Polo Azul", "Camisas", 30, 5, 89.90m),
@@ -140,6 +156,7 @@ using (var connection = new SQLiteConnection(connectionString))
                 ("Meias Esportivas (par)", "Meias", 90, 15, 24.90m)
             };
 
+            // Percorre cada produto da lista e insere no banco vinculando ao ID da categoria correta
             foreach (var (name, category, quantity, reorderThreshold, price) in produtosIniciais)
             {
                 using (var cmd = connection.CreateCommand())
@@ -152,6 +169,7 @@ using (var connection = new SQLiteConnection(connectionString))
                     cmd.Parameters.AddWithValue("@Quantity", quantity);
                     cmd.Parameters.AddWithValue("@ReorderThreshold", reorderThreshold);
                     cmd.Parameters.AddWithValue("@Price", price);
+                    // Busca o ID numérico da categoria pelo nome usando o dicionário preenchido anteriormente
                     cmd.Parameters.AddWithValue("@CategoryId", categoryIds[category]);
 
                     cmd.ExecuteNonQuery();
@@ -162,6 +180,7 @@ using (var connection = new SQLiteConnection(connectionString))
         }
         else
         {
+            // Se o banco já possui dados, apenas exibe a contagem para conferência no terminal
             using (var cmd = connection.CreateCommand())
             {
                 cmd.CommandText = "SELECT COUNT(*) FROM Products";
@@ -181,8 +200,8 @@ app.UseSwaggerUI(); // Gera a interface gráfica do Swagger no navegador
 
 app.UseCors("AllowAll"); // Libera o acesso CORS configurado lá em cima
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // Ativa a verificação do token JWT em cada requisição
+app.UseAuthorization();  // Ativa a verificação de permissões (Roles) nos endpoints protegidos com [Authorize]
 
 app.MapControllers(); // Mapeia todos as rotas definidas nos arquivos Controllers/
 

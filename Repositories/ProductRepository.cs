@@ -18,6 +18,7 @@ namespace ApiEstoqueRoupas.Repositories
         // Instância do ajudante que gerencia e entrega novas conexões
         private readonly DatabaseHelper _databaseHelper;
 
+        // Recebe o helper de banco via injeção de dependência para obter conexões
         public ProductRepository(DatabaseHelper databaseHelper)
         {
             _databaseHelper = databaseHelper;
@@ -52,6 +53,8 @@ namespace ApiEstoqueRoupas.Repositories
             return products;
         }
 
+        // Busca um produto específico pelo ID, fazendo JOIN com a tabela de categorias
+        // Retorna null se o produto não existir
         public async Task<Product?> GetByIdAsync(int id)
         {
             using (var connection = _databaseHelper.GetConnection())
@@ -137,6 +140,8 @@ namespace ApiEstoqueRoupas.Repositories
             return product;
         }
 
+        // Atualiza todos os campos de um produto existente no banco
+        // Retorna true se a operação afetou pelo menos uma linha (produto encontrado e atualizado)
         public async Task<bool> UpdateAsync(Product product)
         {
             using (var connection = _databaseHelper.GetConnection())
@@ -160,12 +165,14 @@ namespace ApiEstoqueRoupas.Repositories
                     command.Parameters.AddWithValue("@ReorderThreshold", product.ReorderThreshold);
                     command.Parameters.AddWithValue("@Price", product.Price);
 
+                    // ExecuteNonQueryAsync retorna o número de linhas afetadas pelo UPDATE
                     var result = await command.ExecuteNonQueryAsync();
                     return result > 0;
                 }
             }
         }
 
+        // Remove um produto do banco pelo ID. Retorna true se o produto foi encontrado e excluído
         public async Task<bool> DeleteAsync(int id)
         {
             using (var connection = _databaseHelper.GetConnection())
@@ -182,6 +189,8 @@ namespace ApiEstoqueRoupas.Repositories
             }
         }
 
+        // Verifica rapidamente se um produto existe, sem carregar todos os seus dados na memória
+        // Útil para validações rápidas antes de operações que dependem da existência do produto
         public async Task<bool> ExistsAsync(int id)
         {
             using (var connection = _databaseHelper.GetConnection())
@@ -198,28 +207,33 @@ namespace ApiEstoqueRoupas.Repositories
             }
         }
 
+        // Método de compatibilidade com a interface. No ADO.NET puro, cada comando já é "commitado" automaticamente,
+        // então este método não precisa fazer nada. Existe apenas para manter o contrato da interface
         public async Task SaveAsync()
         {
-            // ADO.NET commits changes immediately, so this is a no-op
-            // but keeping for interface compatibility
+            // ADO.NET faz commit imediato, então isso é um no-op (operação vazia)
+            // Mantido para compatibilidade com a interface
             await Task.CompletedTask;
         }
 
+        // Método utilitário privado que transforma uma linha do banco (DbDataReader) em um objeto Product
+        // Também cria o objeto Category aninhado usando os dados do JOIN
         private Product MapProduct(DbDataReader reader)
         {
             return new Product(
-                reader.GetString(1),
-                reader.GetInt32(5),
-                reader.GetInt32(2),
-                reader.GetInt32(3),
-                reader.GetDecimal(4)
+                reader.GetString(1),   // Coluna 1 = Name
+                reader.GetInt32(5),    // Coluna 5 = CategoryId
+                reader.GetInt32(2),    // Coluna 2 = Quantity
+                reader.GetInt32(3),    // Coluna 3 = ReorderThreshold
+                reader.GetDecimal(4)   // Coluna 4 = Price
             )
             {
-                Id = reader.GetInt32(0),
+                Id = reader.GetInt32(0), // Coluna 0 = Id do produto
+                // Monta o objeto Category inline para preencher a propriedade de navegação
                 Category = new Category
                 {
-                    Id = reader.GetInt32(5),
-                    Name = reader.GetString(6)
+                    Id = reader.GetInt32(5),    // Mesmo CategoryId
+                    Name = reader.GetString(6)  // Coluna 6 = CategoryName (vindo do JOIN)
                 }
             };
         }

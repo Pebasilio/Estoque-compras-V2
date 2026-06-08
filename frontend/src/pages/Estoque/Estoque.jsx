@@ -9,8 +9,9 @@ import './Estoque.css';
 // Tela essencial que controla o Modal (A janelinha que pula na tela)
 // ==========================================
 const Estoque = () => {
-  const [produtos, setProdutos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [produtos, setProdutos] = useState([]); // Lista de todos os produtos vindos da API
+  const [movements, setMovements] = useState([]); // Histórico de movimentações (entradas e saídas) para alimentar a tabela inferior
+  const [loading, setLoading] = useState(true); // Flag de carregamento para exibir spinner enquanto busca dados
   
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -18,9 +19,11 @@ const Estoque = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [form, setForm] = useState({ quantity: 1, reason: '', user: '' });
 
+  // Ao montar o componente pela primeira vez, carrega os produtos E o histórico de movimentações em paralelo
   useEffect(() => {
-    loadProdutos();
-  }, []);
+    loadProdutos(); // Busca a tabela principal de produtos
+    loadMovements(); // Busca o histórico de entradas/saídas para a tabela inferior
+  }, []); // Array vazio [] = executa apenas 1 vez, quando a tela abre
 
   const loadProdutos = async () => {
     setLoading(true);
@@ -31,6 +34,18 @@ const Estoque = () => {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Busca o histórico completo de movimentações na rota GET /api/stock/movements
+  const loadMovements = async () => {
+    try {
+      const data = await produtoService.getMovements(); // Chama a API C# que retorna todas as movimentações
+      // Ordena decrescente pela data para que as mais recentes apareçam primeiro na tabela
+      const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setMovements(sorted); // Salva no state para o React renderizar a tabela
+    } catch (error) {
+      console.error(error); // Loga o erro silenciosamente (não trava a tela principal)
     }
   };
 
@@ -57,6 +72,7 @@ const Estoque = () => {
       }
       setModalOpen(false); // Fecha a janelinha
       loadProdutos(); // Recarrega a tabela de fundo pra mostrar o novo número
+      loadMovements(); // Atualiza o histórico
     } catch (error) {
       alert(`Erro ao registrar ${modalType === 'entry' ? 'entrada' : 'saída'}. Verifique o estoque atual.`);
     }
@@ -137,6 +153,56 @@ const Estoque = () => {
           </div>
         </div>
       )}
+
+      {/* ==========================================
+          TABELA DE HISTÓRICO DE MOVIMENTAÇÕES
+          Exibe as últimas 15 movimentações (entradas e saídas) registradas no sistema.
+          Os dados vêm da rota GET /api/stock/movements do backend C#.
+          ========================================== */}
+      <div className="stock-header" style={{ marginTop: '3rem' }}>
+        <h2>Últimas Movimentações</h2>
+        <p className="text-muted">Histórico recente de entradas e saídas do estoque.</p>
+      </div>
+      
+      <div className="glass-card mb-4">
+        <table className="custom-table">
+          <thead>
+            <tr>
+              <th>Data/Hora</th>
+              <th>Tipo</th>        {/* ENTRADA (verde) ou SAIDA (vermelho) */}
+              <th>Produto</th>     {/* Nome do produto no momento da movimentação */}
+              <th>Qtd</th>         {/* Quantidade movimentada nesta ação */}
+              <th>Motivo</th>      {/* Ex: "Venda", "Reposição", "Avaria" */}
+              <th>Usuário</th>     {/* Quem realizou a operação */}
+            </tr>
+          </thead>
+          <tbody>
+            {/* slice(0, 15) limita a exibição às 15 movimentações mais recentes para não poluir a tela */}
+            {movements.slice(0, 15).map((m) => (
+              <tr key={m.id}>
+                {/* Converte a data ISO do C# para o formato brasileiro (dd/mm/aaaa hh:mm:ss) */}
+                <td>{new Date(m.date).toLocaleString('pt-BR')}</td>
+                <td>
+                  {/* Aplica cor condicional: verde (text-ok) para ENTRADA, vermelho (text-danger) para SAÍDA */}
+                  <span className={m.type === 'ENTRADA' ? 'text-ok fw-bold' : 'text-danger fw-bold'}>
+                    {m.type}
+                  </span>
+                </td>
+                <td>{m.productName}</td>
+                <td>{m.quantity}</td>
+                <td>{m.reason}</td>
+                <td>{m.user}</td>
+              </tr>
+            ))}
+            {/* Mensagem amigável caso ainda não exista nenhuma movimentação no banco */}
+            {movements.length === 0 && (
+              <tr>
+                <td colSpan="6" className="text-center text-muted py-4">Nenhuma movimentação registrada.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

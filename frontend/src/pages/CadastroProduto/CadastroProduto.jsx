@@ -4,6 +4,10 @@ import { Save, ArrowLeft } from 'lucide-react';
 import { produtoService } from '../../services/produtoService';
 import './CadastroProduto.css';
 
+// ==========================================
+// TELA DE CADASTRO DE PRODUTO
+// Formulário para adicionar uma nova roupa no sistema.
+// ==========================================
 const CadastroProduto = () => {
   const navigate = useNavigate();
   const [categorias, setCategorias] = useState([]);

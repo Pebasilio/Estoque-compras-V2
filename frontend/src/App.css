@@ -1,3 +1,10 @@
+/* ==========================================
+   ESTILOS DO TEMPLATE PADRÃO (App.css)
+   Estes estilos vieram com o scaffolding inicial do Vite + React.
+   Mantidos aqui como referência, mas a aplicação real usa os estilos em /styles/ e nos componentes.
+   ========================================== */
+
+/* --- Botão contador (exemplo do template Vite) --- */
 .counter {
   font-size: 16px;
   padding: 5px 10px;
@@ -17,9 +24,11 @@
   }
 }
 
+/* --- Seção "Hero" com logos animados do Vite/React --- */
 .hero {
   position: relative;
 
+  /* Centraliza os elementos de logo horizontalmente */
   .base,
   .framework,
   .vite {
@@ -27,17 +36,20 @@
     margin: 0 auto;
   }
 
+  /* Logo base (a maior, que fica por trás) */
   .base {
     width: 170px;
     position: relative;
     z-index: 0;
   }
 
+  /* Logos do framework e do Vite ficam sobrepostas com position absolute */
   .framework,
   .vite {
     position: absolute;
   }
 
+  /* Logo do framework (React) com transformação 3D para efeito visual */
   .framework {
     z-index: 1;
     top: 34px;
@@ -46,6 +58,7 @@
       scale(1.4);
   }
 
+  /* Logo do Vite com transformação 3D complementar */
   .vite {
     z-index: 0;
     top: 107px;
@@ -56,6 +69,7 @@
   }
 }
 
+/* --- Container central: onde o conteúdo principal do template é exibido --- */
 #center {
   display: flex;
   flex-direction: column;
@@ -64,17 +78,20 @@
   place-items: center;
   flex-grow: 1;
 
+  /* Responsivo: reduz espaçamento em telas menores */
   @media (max-width: 1024px) {
     padding: 32px 20px 24px;
     gap: 18px;
   }
 }
 
+/* --- Seção "Próximos Passos" do template (links para docs e comunidade) --- */
 #next-steps {
   display: flex;
   border-top: 1px solid var(--border);
   text-align: left;
 
+  /* Cada coluna ocupa espaço igual */
   & > div {
     flex: 1 1 0;
     padding: 32px;
@@ -83,18 +100,21 @@
     }
   }
 
+  /* Ícone decorativo acima de cada seção */
   .icon {
     margin-bottom: 16px;
     width: 22px;
     height: 22px;
   }
 
+  /* Responsivo: empilha verticalmente em telas menores */
   @media (max-width: 1024px) {
     flex-direction: column;
     text-align: center;
   }
 }
 
+/* --- Seção de documentação com borda separadora --- */
 #docs {
   border-right: 1px solid var(--border);
 
@@ -104,6 +124,7 @@
   }
 }
 
+/* --- Lista de links sociais / recursos --- */
 #next-steps ul {
   list-style: none;
   padding: 0;
@@ -115,6 +136,7 @@
     height: 18px;
   }
 
+  /* Estilo dos links como botões arredondados com sombra no hover */
   a {
     color: var(--text-h);
     font-size: 16px;
@@ -136,6 +158,7 @@
     }
   }
 
+  /* Responsivo: quebra os botões em 2 colunas no mobile */
   @media (max-width: 1024px) {
     margin-top: 20px;
     flex-wrap: wrap;
@@ -153,6 +176,7 @@
   }
 }
 
+/* --- Espaçador visual entre seções --- */
 #spacer {
   height: 88px;
   border-top: 1px solid var(--border);
@@ -161,10 +185,12 @@
   }
 }
 
+/* --- Marcadores visuais decorativos (setas triangulares nas bordas) --- */
 .ticks {
   position: relative;
   width: 100%;
 
+  /* Pseudo-elementos criam triângulos nas extremidades usando truque de border */
   &::before,
   &::after {
     content: '';

@@ -1,44 +1,58 @@
+/* ==========================================
+   ESTILOS DO COMPONENTE ALERTCARD
+   Card de alerta visual para produtos com estoque baixo ou zerado.
+   Usa cores e gradientes diferentes para diferenciar aviso (amarelo) de crítico (vermelho).
+   ========================================== */
+
+/* --- Container principal do card de alerta --- */
 .alert-card {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  border-left: 4px solid;
+  border-left: 4px solid; /* A cor da borda esquerda é definida pelas classes abaixo */
 }
 
+/* --- Variante de aviso (estoque baixo, mas não zero) --- */
 .warning-alert {
   border-left-color: var(--warning-color);
   background: linear-gradient(90deg, rgba(245, 158, 11, 0.05) 0%, rgba(22, 30, 49, 0.7) 100%);
 }
 
+/* --- Variante crítica (estoque zerado) --- */
 .critical-alert {
   border-left-color: var(--danger-color);
   background: linear-gradient(90deg, rgba(244, 63, 94, 0.05) 0%, rgba(22, 30, 49, 0.7) 100%);
 }
 
+/* --- Container do ícone circular de alerta --- */
 .alert-icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 50%; /* Torna o container circular */
 }
 
+/* Ícone com fundo amarelo semi-transparente para alerta de aviso */
 .warning-alert .alert-icon-container {
   background: rgba(245, 158, 11, 0.15);
   color: var(--warning-color);
 }
 
+/* Ícone com fundo vermelho semi-transparente para alerta crítico */
 .critical-alert .alert-icon-container {
   background: rgba(244, 63, 94, 0.15);
   color: var(--danger-color);
 }
 
+/* --- Conteúdo textual (título + descrição) --- */
 .alert-content {
-  flex: 1;
+  flex: 1; /* Ocupa todo o espaço restante entre o ícone e a ação */
 }
 
+/* Título do alerta em caixa alta para destaque */
 .alert-title {
   font-size: 0.9rem;
   font-weight: 700;
@@ -47,19 +61,23 @@
   margin-bottom: 4px;
 }
 
+/* Cores específicas do título por tipo de alerta */
 .warning-alert .alert-title { color: var(--warning-color); }
 .critical-alert .alert-title { color: var(--danger-color); }
 
+/* Descrição com texto secundário e espaçamento confortável */
 .alert-desc {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.4;
 }
 
+/* Nome do produto em destaque dentro da descrição */
 .alert-desc strong {
   color: var(--text-primary);
 }
 
+/* --- Área de ação à direita (sugestão + botão) --- */
 .alert-action {
   min-width: 150px;
   text-align: right;
@@ -68,6 +86,7 @@
   align-items: flex-end;
 }
 
+/* Container da sugestão de compra */
 .suggestion {
   display: flex;
   flex-direction: column;
@@ -75,12 +94,14 @@
   gap: 2px;
 }
 
+/* Label "Sugestão de Compra" pequeno e discreto */
 .suggestion-label {
   font-size: 0.75rem;
   color: var(--text-secondary);
   text-transform: uppercase;
 }
 
+/* Valor da sugestão em destaque com cor de destaque do sistema */
 .suggestion-value {
   font-size: 1.1rem;
   font-weight: 700;
@@ -90,6 +111,7 @@
   gap: 6px;
 }
 
+/* --- Classes utilitárias usadas no componente --- */
 .mt-2 {
   margin-top: 8px;
 }
@@ -98,12 +120,14 @@
   width: 100%;
 }
 
+/* --- Responsivo: empilha verticalmente em telas pequenas (< 640px) --- */
 @media (max-width: 640px) {
   .alert-card {
     flex-direction: column;
     align-items: flex-start;
   }
   
+  /* A área de ação ganha separador visual e ocupa toda a largura */
   .alert-action {
     width: 100%;
     align-items: flex-start;

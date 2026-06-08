@@ -52,22 +52,29 @@ namespace ApiEstoqueRoupas.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
+        // Rota: PUT /api/categories/{id}
+        // Atualiza os dados de uma categoria existente
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] Category category)
         {
+            // Proteção contra inconsistência: o ID da URL deve bater com o ID do objeto enviado no corpo da requisição
             if (id != category.Id)
                 return BadRequest(new { message = "ID da rota não corresponde ao ID do corpo." });
             if (string.IsNullOrWhiteSpace(category.Name))
                 return BadRequest(new { message = "Nome da categoria é obrigatório." });
 
+            // Tenta atualizar no banco. Se retornar false, a categoria não foi encontrada
             var updated = await _repository.UpdateAsync(category);
             if (!updated) return NotFound(new { message = $"Categoria {id} não encontrada." });
             return Ok(new { message = "Categoria atualizada.", category });
         }
 
+        // Rota: DELETE /api/categories/{id}
+        // Remove uma categoria. Falha se houver produtos vinculados (proteção de integridade referencial)
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
+            // O repositório verifica internamente se existem produtos na categoria antes de deletar
             var deleted = await _repository.DeleteAsync(id);
             if (!deleted)
                 return BadRequest(new { message = "Categoria não encontrada ou possui produtos vinculados." });

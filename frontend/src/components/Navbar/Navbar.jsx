@@ -12,10 +12,12 @@ import './Navbar.css';
 const Navbar = () => {
   const navigate = useNavigate(); // Hook para mudar de página via código
   const location = useLocation(); // Hook para saber em qual URL estamos agora
-  const [user, setUser] = useState({ name: 'Usuário', email: '' });
-  const [alertCount, setAlertCount] = useState(0);
+  const [user, setUser] = useState({ name: 'Usuário', email: '' }); // Dados do usuário logado
+  const [alertCount, setAlertCount] = useState(0); // Contador de alertas para o badge de notificação
 
+  // Ao montar o componente, busca dados do usuário e alertas de estoque
   useEffect(() => {
+    // Recupera os dados do usuário logado que estão salvos no localStorage
     const currentUser = authService.getCurrentUser();
     if (currentUser) {
       setUser(currentUser);
@@ -54,30 +56,38 @@ const Navbar = () => {
 
   return (
     <header className="navbar">
+      {/* Lado esquerdo: Título dinâmico da página atual */}
       <div className="navbar-left">
         <h1 className="page-title">{getPageTitle()}</h1>
       </div>
       
+      {/* Lado direito: busca, notificações, perfil e logout */}
       <div className="navbar-right">
+        {/* Campo de pesquisa com ícone de lupa integrado */}
         <div className="search-box">
           <Search size={18} className="search-icon" />
           <input type="text" placeholder="Pesquisar..." className="search-input" />
         </div>
         
+        {/* Botão de notificações: navega para a tela de compras e mostra badge com contagem */}
         <button className="icon-btn notification-btn" onClick={() => navigate('/compras')} title="Ver Alertas de Reposição">
           <Bell size={20} />
+          {/* Badge só aparece se existirem alertas (renderização condicional) */}
           {alertCount > 0 && <span className="badge">{alertCount}</span>}
         </button>
         
+        {/* Seção do perfil do usuário com avatar e nome */}
         <div className="user-profile">
           <div className="avatar">
             <User size={18} />
           </div>
           <div className="user-info">
+            {/* Exibe o nome do usuário, ou a parte antes do @ do email, ou "Admin" como fallback */}
             <span className="user-name">{user.name || user.email?.split('@')[0] || 'Admin'}</span>
           </div>
         </div>
         
+        {/* Botão de logout: limpa credenciais e redireciona para a tela de login */}
         <button className="icon-btn logout-btn" onClick={handleLogout} title="Sair">
           <LogOut size={20} />
         </button>

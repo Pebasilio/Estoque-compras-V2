@@ -1,35 +1,59 @@
+/* ==========================================
+   ESTILOS GLOBAIS (index.css)
+   Define as variáveis de tema (cores, fontes), o reset básico e a tipografia global.
+   Este arquivo é importado no App.jsx e afeta TODA a aplicação.
+   ========================================== */
+
+/* --- Variáveis de tema claro (padrão) --- */
 :root {
+  /* Cores de texto */
   --text: #6b6375;
   --text-h: #08060d;
+
+  /* Cor de fundo principal */
   --bg: #fff;
+
+  /* Bordas e separadores */
   --border: #e5e4e7;
+
+  /* Fundo de blocos de código */
   --code-bg: #f4f3ec;
+
+  /* Cor de destaque (accent) com variantes para fundo e borda */
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
+
+  /* Fundo dos botões sociais */
   --social-bg: rgba(244, 243, 236, 0.5);
+
+  /* Sombra padrão para elevação */
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
+  /* Famílias tipográficas */
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  /* Configuração base de fonte e renderização */
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light dark; /* Indica ao navegador que suportamos ambos os temas */
   color: var(--text);
   background: var(--bg);
-  font-synthesis: none;
+  font-synthesis: none; /* Impede o navegador de "inventar" negrito/itálico */
   text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased; /* Suaviza as fontes no Chrome/Safari */
+  -moz-osx-font-smoothing: grayscale; /* Suaviza as fontes no Firefox/macOS */
 
+  /* Responsivo: reduz tamanho base em telas menores */
   @media (max-width: 1024px) {
     font-size: 16px;
   }
 }
 
+/* --- Variáveis de tema escuro (ativado automaticamente pela preferência do SO) --- */
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
@@ -45,27 +69,31 @@
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
 
+  /* Inverte os ícones sociais para ficarem visíveis no fundo escuro */
   #social .button-icon {
     filter: invert(1) brightness(2);
   }
 }
 
+/* --- Reset do body (remove margem padrão do navegador) --- */
 body {
   margin: 0;
 }
 
+/* --- Container raiz onde o React monta toda a aplicação --- */
 #root {
   width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
+  max-width: 100%; /* Nunca ultrapassa a largura da tela */
+  margin: 0 auto; /* Centraliza horizontalmente */
   text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  border-inline: 1px solid var(--border); /* Bordas laterais decorativas */
+  min-height: 100svh; /* Altura mínima = viewport inteira */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
+/* --- Tipografia dos títulos --- */
 h1,
 h2 {
   font-family: var(--heading);
@@ -91,10 +119,13 @@ h2 {
     font-size: 20px;
   }
 }
+
+/* Remove margem padrão dos parágrafos */
 p {
   margin: 0;
 }
 
+/* --- Estilo de código inline e contador (fonte monospace) --- */
 code,
 .counter {
   font-family: var(--mono);

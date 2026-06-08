@@ -3,7 +3,6 @@ import { fetchWithAuth, USE_MOCK_DATA } from './api';
 // ==========================================
 // MOCK DATA (O Plano B)
 // Usado caso a flag USE_MOCK_DATA do arquivo api.js esteja ligada.
-// Muito útil se você for apresentar o layout para alguém mas estiver sem o C# rodando.
 // ==========================================
 const MOCK_PRODUCTS = [
   { id: 1, name: "Camiseta Algodão", categoryId: 1, category: { name: "Camisetas" }, quantity: 45, reorderThreshold: 20, price: 59.90, stockStatus: "OK" },
@@ -19,7 +18,7 @@ export const produtoService = {
   // GET: Obter todos os produtos listados
   async getProdutos() {
     if (USE_MOCK_DATA) return Promise.resolve(MOCK_PRODUCTS);
-    return fetchWithAuth('/products'); // O fetchWithAuth já embute o Token de forma mágica!
+    return fetchWithAuth('/products'); // O fetchWithAuth já embute o Token JWT e trata erros comuns, simplificando o código aqui
   },
 
   // GET: Obter produto específico
@@ -115,6 +114,22 @@ export const produtoService = {
       },
       suggestedQuantity: a.suggestedOrderQuantity
     }));
+  },
+
+  // GET: Movimentações (Histórico)
+  // Busca todas as movimentações de estoque na rota GET /api/stock/movements
+  // Parâmetro opcional 'type' permite filtrar por "ENTRADA" ou "SAIDA" via query string
+  async getMovements(type = null) {
+    // Se estiver usando dados falsos (mock), retorna exemplos estáticos para não precisar do backend
+    if (USE_MOCK_DATA) {
+      return Promise.resolve([
+        { id: 1, productName: "Camiseta Algodão", type: "ENTRADA", quantity: 10, reason: "Reposição", date: new Date().toISOString(), user: "Admin" },
+        { id: 2, productName: "Calça Jeans Slim", type: "SAIDA", quantity: 2, reason: "Venda", date: new Date().toISOString(), user: "Vendedor" }
+      ]);
+    }
+    // Monta a URL com ou sem filtro de tipo. Ex: /stock/movements?type=ENTRADA
+    const url = type ? `/stock/movements?type=${type}` : '/stock/movements';
+    return fetchWithAuth(url); // Faz a requisição autenticada com JWT
   },
   
   // PATCH (Exemplo): Atualizar apenas uma propriedade (quantidade rápida sem histórico - se suportado pelo backend)

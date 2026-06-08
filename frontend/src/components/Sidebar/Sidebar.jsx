@@ -10,6 +10,7 @@ import './Sidebar.css';
 const Sidebar = () => {
   return (
     <aside className="sidebar">
+      {/* Cabeçalho da sidebar: ícone do logo + nome do sistema */}
       <div className="sidebar-header">
         <div className="logo-icon">
           <Package size={24} color="#0EA5E9" />
@@ -41,6 +42,7 @@ const Sidebar = () => {
         </NavLink>
       </nav>
       
+      {/* Rodapé: exibe a versão atual do sistema */}
       <div className="sidebar-footer">
         <p className="version">v1.0.0</p>
       </div>

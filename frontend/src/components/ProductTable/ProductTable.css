@@ -1,14 +1,23 @@
+/* ==========================================
+   ESTILOS DO COMPONENTE PRODUCTTABLE
+   Tabela moderna com efeito hover nas linhas, pills de status coloridas
+   e botões de ação com cores contextuais.
+   ========================================== */
+
+/* --- Container com scroll horizontal para telas pequenas --- */
 .table-container {
   overflow-x: auto;
-  padding: 0; /* Override glass-card padding for flush table */
+  padding: 0; /* Remove o padding do glass-card para a tabela ficar rente às bordas */
 }
 
+/* --- Tabela principal --- */
 .modern-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* Remove espaçamento entre células */
   text-align: left;
 }
 
+/* Cabeçalho da tabela: texto discreto em caixa alta com fundo escurecido */
 .modern-table th {
   padding: 16px 20px;
   font-size: 0.85rem;
@@ -17,9 +26,10 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 1px solid var(--border-glass);
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.1); /* Leve sombreamento no cabeçalho */
 }
 
+/* Células de dados */
 .modern-table td {
   padding: 16px 20px;
   font-size: 0.95rem;
@@ -28,59 +38,70 @@
   vertical-align: middle;
 }
 
+/* Transição suave no hover das linhas */
 .modern-table tbody tr {
   transition: background var(--transition-fast);
 }
 
+/* Destaque visual ao passar o mouse sobre uma linha */
 .modern-table tbody tr:hover {
   background: var(--bg-hover);
 }
 
+/* Remove a borda inferior da última linha (evita borda dupla com o container) */
 .modern-table tbody tr:last-child td {
   border-bottom: none;
 }
 
+/* --- Classes utilitárias de tipografia --- */
 .fw-600 {
-  font-weight: 600;
+  font-weight: 600; /* Negrito para o nome do produto */
 }
 
 .text-muted {
-  color: var(--text-muted);
+  color: var(--text-muted); /* Cor discreta para o ID */
 }
 
+/* --- Pill de status do estoque (badge arredondada com cor) --- */
 .stock-pill {
   padding: 4px 10px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full); /* Totalmente arredondado */
   font-size: 0.85rem;
   font-weight: 600;
   display: inline-block;
 }
 
+/* Variante verde: estoque OK */
 .text-ok {
   background: rgba(16, 185, 129, 0.1);
   color: var(--success-color);
 }
 
+/* Variante amarela: estoque baixo */
 .text-warning {
   background: rgba(245, 158, 11, 0.1);
   color: var(--warning-color);
 }
 
+/* Variante vermelha: estoque crítico (zerado) */
 .text-critical {
   background: rgba(244, 63, 94, 0.1);
   color: var(--danger-color);
 }
 
+/* --- Coluna de ações (botões não quebram em múltiplas linhas) --- */
 .actions-cell {
-  width: 1%;
-  white-space: nowrap;
+  width: 1%; /* Truque CSS: a coluna encolhe ao menor tamanho possível */
+  white-space: nowrap; /* Impede quebra de linha nos botões */
 }
 
+/* Container horizontal dos botões de ação */
 .table-actions {
   display: flex;
   gap: 8px;
 }
 
+/* --- Botão de ação pequeno (ícone puro sem texto) --- */
 .icon-btn-small {
   background: transparent;
   border: none;
@@ -94,15 +115,18 @@
   transition: all var(--transition-fast);
 }
 
+/* Fundo sutil ao passar o mouse */
 .icon-btn-small:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.success-hover:hover { color: var(--success-color); background: rgba(16, 185, 129, 0.1); }
-.warning-hover:hover { color: var(--warning-color); background: rgba(245, 158, 11, 0.1); }
-.primary-hover:hover { color: var(--accent-color); background: rgba(14, 165, 233, 0.1); }
-.danger-hover:hover { color: var(--danger-color); background: rgba(244, 63, 94, 0.1); }
+/* --- Cores contextuais no hover de cada tipo de botão --- */
+.success-hover:hover { color: var(--success-color); background: rgba(16, 185, 129, 0.1); }  /* Entrada */
+.warning-hover:hover { color: var(--warning-color); background: rgba(245, 158, 11, 0.1); }  /* Saída */
+.primary-hover:hover { color: var(--accent-color); background: rgba(14, 165, 233, 0.1); }   /* Editar */
+.danger-hover:hover { color: var(--danger-color); background: rgba(244, 63, 94, 0.1); }     /* Excluir */
 
+/* --- Estado vazio quando não há produtos --- */
 .empty-state {
   text-align: center;
   padding: 40px;
