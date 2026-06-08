@@ -56,16 +56,27 @@ const EditarProduto = () => {
     }));
   };
 
+  // Handler do formulário: Dispara quando o usuário clica em "Atualizar Produto"
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
+    e.preventDefault(); // Evita o comportamento padrão do HTML de recarregar a página
+    setSaving(true); // Ativa o spinner/loading no botão
     try {
-      await produtoService.updateProduto(id, formData);
-      navigate('/produtos');
+      // CORREÇÃO IMPORTANTE: O backend C# exige que o ID do produto esteja dentro do corpo da requisição (product.Id)
+      // além de estar na URL. Sem isso, a API retorna 400 Bad Request por incompatibilidade de IDs.
+      // O spread (...formData) copia todos os campos e adicionamos o 'id' convertido para número inteiro.
+      await produtoService.updateProduto(id, {
+        ...formData,
+        id: parseInt(id),
+        categoryId: parseInt(formData.categoryId),   // garante int, não string
+        quantity: parseInt(formData.quantity),
+        reorderThreshold: parseInt(formData.reorderThreshold),
+        price: parseFloat(formData.price),
+      });
+      navigate('/produtos'); // Redireciona de volta para a listagem após salvar com sucesso
     } catch (error) {
       alert('Erro ao atualizar produto.');
     } finally {
-      setSaving(false);
+      setSaving(false); // Desativa o loading independente de sucesso ou erro
     }
   };
 
