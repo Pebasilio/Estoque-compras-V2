@@ -19,7 +19,7 @@ export const produtoService = {
   // GET: Obter todos os produtos listados
   async getProdutos() {
     if (USE_MOCK_DATA) return Promise.resolve(MOCK_PRODUCTS);
-    return fetchWithAuth('/products'); // O fetchWithAuth já embute o Token de forma mágica!
+    return fetchWithAuth('/products');
   },
 
   // GET: Obter produto específico
@@ -47,11 +47,42 @@ export const produtoService = {
   },
 
   // PUT: Atualizar produto inteiro
+  // Envia TODOS os campos obrigatórios. O backend C# exige que o ID esteja
+  // tanto na URL (/products/:id) quanto no corpo da requisição (product.Id),
+  // caso contrário retorna 400 Bad Request por incompatibilidade de IDs.
   async updateProduto(id, produtoData) {
     if (USE_MOCK_DATA) return Promise.resolve(produtoData);
     return fetchWithAuth(`/products/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(produtoData)
+      body: JSON.stringify({
+        ...produtoData,
+        id: parseInt(id),              // garante que o ID no body bate com o da URL
+        categoryId: parseInt(produtoData.categoryId),
+        quantity: parseInt(produtoData.quantity),
+        reorderThreshold: parseInt(produtoData.reorderThreshold),
+        price: parseFloat(produtoData.price),
+      })
+    });
+  },
+
+  // PATCH: Atualizar parcialmente um produto
+  // Diferente do PUT, aqui você envia APENAS os campos que quer alterar.
+  // Útil para edições rápidas sem precisar reenviar todos os dados do produto.
+  // Exemplo de uso: patchProduto(3, { price: 49.90 })
+  //                 patchProduto(3, { name: "Camiseta Premium", price: 79.90 })
+  async patchProduto(id, camposParaAtualizar) {
+    if (USE_MOCK_DATA) return Promise.resolve({ success: true });
+
+    // Sanitiza os tipos numéricos somente se os campos foram enviados
+    const payload = { ...camposParaAtualizar };
+    if (payload.categoryId !== undefined) payload.categoryId = parseInt(payload.categoryId);
+    if (payload.quantity    !== undefined) payload.quantity    = parseInt(payload.quantity);
+    if (payload.reorderThreshold !== undefined) payload.reorderThreshold = parseInt(payload.reorderThreshold);
+    if (payload.price       !== undefined) payload.price       = parseFloat(payload.price);
+
+    return fetchWithAuth(`/products/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload)
     });
   },
 
@@ -101,10 +132,10 @@ export const produtoService = {
         }))
       );
     }
-    
-    // O backend retorna um objeto { count: N, alerts: [...] } 
+
+    // O backend retorna um objeto { count: N, alerts: [...] }
     const response = await fetchWithAuth('/stock/restock-alerts');
-    
+
     // Mapeando do formato do C# (RestockAlert) para o formato que o React espera
     return response.alerts.map(a => ({
       product: {
@@ -116,13 +147,4 @@ export const produtoService = {
       suggestedQuantity: a.suggestedOrderQuantity
     }));
   },
-  
-  // PATCH (Exemplo): Atualizar apenas uma propriedade (quantidade rápida sem histórico - se suportado pelo backend)
-  async patchProdutoQuantity(id, quantity) {
-    if (USE_MOCK_DATA) return Promise.resolve({ success: true });
-    return fetchWithAuth(`/products/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ quantity })
-    });
-  }
 };
