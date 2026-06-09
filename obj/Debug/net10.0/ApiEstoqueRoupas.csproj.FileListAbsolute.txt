@@ -192,3 +192,5 @@ C:\Users\pedro.basilio\.vscode\Estoque-e-compras\Estoque-compras-V2\obj\Debug\ne
 C:\Users\pedro.basilio\.vscode\Estoque-e-compras\Estoque-compras-V2\obj\Debug\net10.0\ApiEstoqueRoupas.pdb
 C:\Users\pedro.basilio\.vscode\Estoque-e-compras\Estoque-compras-V2\obj\Debug\net10.0\ApiEstoqueRoupas.genruntimeconfig.cache
 C:\Users\pedro.basilio\.vscode\Estoque-e-compras\Estoque-compras-V2\obj\Debug\net10.0\ref\ApiEstoqueRoupas.dll
+C:\Users\pedro.basilio\.vscode\Estoque-e-compras\Estoque-compras-V2\bin\Debug\net10.0\frontend\Estoque-compras-V2\package-lock.json
+C:\Users\pedro.basilio\.vscode\Estoque-e-compras\Estoque-compras-V2\bin\Debug\net10.0\frontend\Estoque-compras-V2\package.json

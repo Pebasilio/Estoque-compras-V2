@@ -36,32 +36,28 @@ export async function fetchWithAuth(endpoint, options = {}) {
     headers,
   });
 
-  // Se a resposta HTTP não foi bem-sucedida (status fora do range 200-299)
   if (!response.ok) {
     if (response.status === 401 || response.status === 403) {
-      // Logout automático: se o token expirou ou é inválido, limpa tudo e joga pro login
+      // Auto logout if token expires or is invalid
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
     
-    // Tenta extrair a mensagem de erro do corpo da resposta (JSON)
     let errorData;
     try {
       errorData = await response.json();
     } catch {
-      errorData = { message: 'Erro desconhecido na API' }; // Fallback se o corpo não for JSON
+      errorData = { message: 'Erro desconhecido na API' };
     }
     
-    // Lança uma exceção para que o código chamador (service) possa tratar no catch
     throw new Error(errorData.message || `Erro ${response.status}: Falha na requisição`);
   }
 
-  // Requisições DELETE geralmente retornam 204 (No Content) sem corpo na resposta
+  // Some DELETE requests might not return a body
   if (response.status === 204) {
     return null;
   }
 
-  // Para todas as outras respostas bem-sucedidas, converte o corpo de texto para JSON
   return response.json();
 }

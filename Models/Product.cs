@@ -123,4 +123,17 @@ namespace ApiEstoqueRoupas.Models
         public int SuggestedOrderQuantity { get; set; } // Cálculo inteligente: O quanto eu devo comprar para sair da zona de risco
         public string AlertLevel { get; set; } = string.Empty; // "WARNING" ou "CRITICAL"
     }
+
+    // DTO para atualização parcial de produto (PATCH)
+    // Todos os campos são nullable: apenas os campos enviados serão atualizados
+    public class ProductPatchRequest
+    {
+        public string? Name { get; set; }
+        public int? Quantity { get; set; }
+        public int? ReorderThreshold { get; set; }
+        public decimal? Price { get; set; }
+        public int? CategoryId { get; set; }
+    }
 }
+// Nota: O bloco abaixo deve ser adicionado DENTRO do namespace ApiEstoqueRoupas.Models
+// (já existente no arquivo), logo após a classe RestockAlert

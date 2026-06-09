@@ -21,6 +21,8 @@ namespace ApiEstoqueRoupas.Repositories
         Task<Product> AddAsync(Product product);
         // Atualiza os dados de um produto existente. Retorna true se conseguiu atualizar
         Task<bool> UpdateAsync(Product product);
+        // Atualiza parcialmente um produto (apenas os campos informados). Retorna null se não encontrado
+        Task<Product?> PatchAsync(int id, Models.ProductPatchRequest patch);
         // Remove um produto pelo ID. Retorna true se o produto foi encontrado e excluído
         Task<bool> DeleteAsync(int id);
         

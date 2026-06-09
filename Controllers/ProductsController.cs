@@ -112,6 +112,47 @@ namespace ApiEstoqueRoupas.Controllers
             return Ok(new { message = "Produto atualizado com sucesso.", product });
         }
 
+        // Rota: PATCH /api/products/{id}
+        // Atualiza parcialmente um produto — apenas os campos enviados no corpo serão alterados.
+        // Útil quando o frontend quer mudar só o preço ou só a quantidade sem reenviar tudo.
+        [HttpPatch("{id:int}")]
+        public async Task<IActionResult> Patch(int id, [FromBody] ProductPatchRequest patch)
+        {
+            // Valida antecipadamente campos que chegaram para evitar chamadas desnecessárias ao banco
+            if (patch.Name is not null && string.IsNullOrWhiteSpace(patch.Name))
+                return BadRequest(new { message = "Nome não pode ser vazio." });
+
+            if (patch.Quantity.HasValue && patch.Quantity.Value < 0)
+                return BadRequest(new { message = "Quantidade não pode ser negativa." });
+
+            if (patch.ReorderThreshold.HasValue && patch.ReorderThreshold.Value < 0)
+                return BadRequest(new { message = "Limite de reposição não pode ser negativo." });
+
+            if (patch.Price.HasValue && patch.Price.Value < 0)
+                return BadRequest(new { message = "Preço não pode ser negativo." });
+
+            // Se um novo CategoryId foi enviado, verifica se a categoria realmente existe
+            if (patch.CategoryId.HasValue)
+            {
+                var category = await _categoryRepository.GetByIdAsync(patch.CategoryId.Value);
+                if (category is null)
+                    return BadRequest(new { message = $"Categoria {patch.CategoryId.Value} não existe." });
+            }
+
+            try
+            {
+                var updated = await _repository.PatchAsync(id, patch);
+                if (updated is null)
+                    return NotFound(new { message = $"Produto {id} não encontrado." });
+
+                return Ok(new { message = "Produto atualizado parcialmente com sucesso.", product = updated });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // Rota: DELETE /api/products/{id}
         // Remove permanentemente um produto do banco de dados
         [HttpDelete("{id:int}")]

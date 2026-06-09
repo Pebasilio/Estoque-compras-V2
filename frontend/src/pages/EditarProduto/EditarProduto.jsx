@@ -64,7 +64,14 @@ const EditarProduto = () => {
       // CORREÇÃO IMPORTANTE: O backend C# exige que o ID do produto esteja dentro do corpo da requisição (product.Id)
       // além de estar na URL. Sem isso, a API retorna 400 Bad Request por incompatibilidade de IDs.
       // O spread (...formData) copia todos os campos e adicionamos o 'id' convertido para número inteiro.
-      await produtoService.updateProduto(id, { ...formData, id: parseInt(id) });
+      await produtoService.updateProduto(id, {
+        ...formData,
+        id: parseInt(id),
+        categoryId: parseInt(formData.categoryId),   // garante int, não string
+        quantity: parseInt(formData.quantity),
+        reorderThreshold: parseInt(formData.reorderThreshold),
+        price: parseFloat(formData.price),
+      });
       navigate('/produtos'); // Redireciona de volta para a listagem após salvar com sucesso
     } catch (error) {
       alert('Erro ao atualizar produto.');

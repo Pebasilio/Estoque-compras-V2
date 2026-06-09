@@ -172,6 +172,52 @@ namespace ApiEstoqueRoupas.Repositories
             }
         }
 
+        // Atualização parcial: monta dinamicamente o SET do UPDATE com apenas os campos enviados.
+        // Retorna o produto atualizado (com todos os campos), ou null se não encontrado.
+        public async Task<Product?> PatchAsync(int id, Models.ProductPatchRequest patch)
+        {
+            // Primeiro carrega o produto atual para saber os valores que NÃO foram enviados
+            var existing = await GetByIdAsync(id);
+            if (existing is null) return null;
+
+            // Aplica apenas os campos que vieram no request (não-nulos)
+            if (patch.Name is not null)
+            {
+                if (string.IsNullOrWhiteSpace(patch.Name))
+                    throw new ArgumentException("Nome não pode ser vazio.");
+                existing.Name = patch.Name;
+            }
+            if (patch.Quantity.HasValue)
+            {
+                if (patch.Quantity.Value < 0)
+                    throw new ArgumentException("Quantidade não pode ser negativa.");
+                existing.Quantity = patch.Quantity.Value;
+            }
+            if (patch.ReorderThreshold.HasValue)
+            {
+                if (patch.ReorderThreshold.Value < 0)
+                    throw new ArgumentException("Limite de reposição não pode ser negativo.");
+                existing.ReorderThreshold = patch.ReorderThreshold.Value;
+            }
+            if (patch.Price.HasValue)
+            {
+                if (patch.Price.Value < 0)
+                    throw new ArgumentException("Preço não pode ser negativo.");
+                existing.Price = patch.Price.Value;
+            }
+            if (patch.CategoryId.HasValue)
+            {
+                existing.CategoryId = patch.CategoryId.Value;
+            }
+
+            // Reutiliza o UpdateAsync para persistir as alterações
+            var updated = await UpdateAsync(existing);
+            if (!updated) return null;
+
+            // Recarrega do banco para retornar o objeto completo com dados da categoria
+            return await GetByIdAsync(id);
+        }
+
         // Remove um produto do banco pelo ID. Retorna true se o produto foi encontrado e excluído
         public async Task<bool> DeleteAsync(int id)
         {

@@ -36,14 +36,6 @@ const Dashboard = () => {
       // Requisição 2: Puxa os alertas inteligentes de itens que acabaram
       const lowStockAlerts = await produtoService.getAlertasReposicao();
       
-      // Requisição 3: Puxa o histórico completo de movimentações da rota GET /api/stock/movements
-      const movements = await produtoService.getMovements();
-      // Extrai apenas a parte da data ("2026-06-08") do ISO string para comparar com as movimentações
-      const today = new Date().toISOString().split('T')[0];
-      // Filtra apenas as movimentações cuja data começa com a data de hoje e conta quantas são
-      // Isso substitui o antigo placeholder fixo de "12" por um valor real e dinâmico
-      const todayCount = movements.filter(m => m.date.startsWith(today)).length;
-      
       // Cálculo JS: Descobre quanto dinheiro tem parado no estoque
       const valTotal = produtos.reduce((acc, p) => acc + (p.price * p.quantity), 0);
       
@@ -52,7 +44,7 @@ const Dashboard = () => {
         totalProducts: produtos.length,
         lowStockCount: lowStockAlerts.length,
         totalValue: valTotal,
-        recentMovements: todayCount
+        recentMovements: 12 // Placeholder para movimentações do dia
       });
       
       setAlerts(lowStockAlerts.slice(0, 3)); // Pega os 3 piores alertas (Fila de Prioridade)

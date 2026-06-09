@@ -1,25 +1,17 @@
-/* ==========================================
-   ESTILOS DO COMPONENTE NAVBAR (Barra Superior)
-   Barra de navegação fixa no topo da área de conteúdo.
-   Contém: título da página, campo de busca, notificações, perfil do usuário e botão de logout.
-   ========================================== */
-
-/* --- Container principal da navbar (sticky no topo) --- */
 .navbar {
   height: 70px;
   background-color: var(--bg-card);
-  backdrop-filter: blur(12px); /* Efeito de vidro fosco para transparência */
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-glass);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  position: sticky; /* Fica "grudada" no topo ao rolar a página */
+  position: sticky;
   top: 0;
-  z-index: 10; /* Garante que a navbar fique acima do conteúdo */
+  z-index: 10;
 }
 
-/* --- Título da página atual (ex: "Visão Geral", "Produtos") --- */
 .page-title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -27,48 +19,42 @@
   margin: 0;
 }
 
-/* --- Lado direito da navbar (busca, notificações, perfil, logout) --- */
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-/* --- Caixa de pesquisa com ícone embutido --- */
 .search-box {
-  position: relative; /* Necessário para posicionar o ícone de lupa dentro */
+  position: relative;
   display: flex;
   align-items: center;
 }
 
-/* Ícone de lupa posicionado à esquerda dentro do input */
 .search-icon {
   position: absolute;
   left: 12px;
   color: var(--text-secondary);
 }
 
-/* Campo de texto de busca com padding à esquerda para não sobrepor o ícone */
 .search-input {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-glass);
   color: var(--text-primary);
-  padding: 8px 16px 8px 36px; /* 36px à esquerda = espaço para o ícone */
+  padding: 8px 16px 8px 36px;
   border-radius: var(--radius-full);
   font-size: 0.85rem;
   width: 250px;
   transition: all var(--transition-fast);
 }
 
-/* Ao focar, o input expande e ganha borda de destaque */
 .search-input:focus {
   outline: none;
   border-color: var(--accent-color);
   background: rgba(0, 0, 0, 0.3);
-  width: 280px; /* Expande suavemente para indicar que está ativo */
+  width: 280px;
 }
 
-/* --- Botões de ícone (notificação e logout) --- */
 .icon-btn {
   background: transparent;
   border: none;
@@ -79,9 +65,9 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 50%; /* Circular */
+  border-radius: 50%;
   transition: all var(--transition-fast);
-  position: relative; /* Necessário para o badge de notificação */
+  position: relative;
 }
 
 .icon-btn:hover {
@@ -89,7 +75,6 @@
   color: var(--text-primary);
 }
 
-/* --- Badge de notificação (bolinha vermelha com número) --- */
 .notification-btn .badge {
   position: absolute;
   top: 4px;
@@ -100,24 +85,22 @@
   font-weight: bold;
   height: 16px;
   min-width: 16px;
-  border-radius: 8px; /* Pílula arredondada */
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 4px;
-  border: 2px solid var(--bg-card); /* Borda que separa o badge do botão */
+  border: 2px solid var(--bg-card);
 }
 
-/* --- Seção do perfil do usuário (avatar + nome) --- */
 .user-profile {
   display: flex;
   align-items: center;
   gap: 10px;
   padding-left: 10px;
-  border-left: 1px solid var(--border-glass); /* Separador visual à esquerda */
+  border-left: 1px solid var(--border-glass);
 }
 
-/* Avatar circular com gradiente de destaque */
 .avatar {
   width: 36px;
   height: 36px;
@@ -129,31 +112,27 @@
   color: white;
 }
 
-/* Container do nome do usuário */
 .user-info {
   display: flex;
   flex-direction: column;
 }
 
-/* Nome do usuário logado */
 .user-name {
   font-weight: 500;
   font-size: 0.9rem;
   color: var(--text-primary);
 }
 
-/* --- Botão de logout: fica vermelho ao passar o mouse --- */
 .logout-btn:hover {
   color: var(--danger-color);
   background: rgba(244, 63, 94, 0.1);
 }
 
-/* --- Responsivo: esconde busca e nome em telas pequenas --- */
 @media (max-width: 768px) {
   .search-box, .user-info {
-    display: none; /* A busca e o nome somem, ficam só os ícones */
+    display: none;
   }
   .navbar {
-    padding: 0 16px; /* Reduz padding lateral */
+    padding: 0 16px;
   }
 }

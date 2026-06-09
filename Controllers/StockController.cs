@@ -87,7 +87,6 @@ namespace ApiEstoqueRoupas.Controllers
             if (product.Quantity < request.Quantity)
                 return BadRequest(new { message = $"Estoque insuficiente. Disponível: {product.Quantity}" });
 
-            // Cria o registro de movimentação de saída com os mesmos campos do registro de entrada
             var movement = new StockMovement
             {
                 ProductId = product.Id,
@@ -101,16 +100,12 @@ namespace ApiEstoqueRoupas.Controllers
                 Date = DateTime.Now
             };
 
-            // Subtrai a quantidade do saldo do produto
             product.Quantity -= request.Quantity;
-            // Persiste as alterações no banco (atualiza produto e salva histórico)
             await _productRepository.UpdateAsync(product);
             await _movementRepository.AddAsync(movement);
 
-            // Verifica se após a saída o estoque caiu para a zona de perigo
             var needsRestock = product.Quantity <= product.ReorderThreshold;
 
-            // Retorna a resposta com mensagem de alerta especial caso o estoque esteja baixo
             return Ok(new StockMovementResponse
             {
                 Success = true,
@@ -124,8 +119,6 @@ namespace ApiEstoqueRoupas.Controllers
             });
         }
 
-        // Rota: GET /api/stock/history/{productId}
-        // Retorna o histórico de todas as movimentações de um produto específico (ordenado por data decrescente)
         [HttpGet("history/{productId:int}")]
         public async Task<IActionResult> History(int productId)
         {
@@ -133,22 +126,17 @@ namespace ApiEstoqueRoupas.Controllers
             return Ok(movements);
         }
 
-        // Rota: GET /api/stock/movements?type=ENTRADA|SAIDA
-        // Retorna as últimas movimentações globais, com filtro opcional por tipo via query string
         [HttpGet("movements")]
         public async Task<IActionResult> Movements([FromQuery] string? type)
         {
-            // Inicializa o filtro como nulo (sem filtro = traz tudo)
             MovementType? filter = null;
             if (!string.IsNullOrEmpty(type))
             {
-                // Tenta converter o texto "ENTRADA" ou "SAIDA" para o Enum correspondente
                 if (!Enum.TryParse<MovementType>(type.ToUpper(), out var parsed))
                     return BadRequest(new { message = "Tipo inválido. Use ENTRADA ou SAIDA." });
                 filter = parsed;
             }
 
-            // Busca as movimentações no banco com o filtro aplicado (ou sem filtro)
             var movements = await _movementRepository.GetAllAsync(filter);
             return Ok(movements);
         }
@@ -181,30 +169,23 @@ namespace ApiEstoqueRoupas.Controllers
             return Ok(new { count = alerts.Count, alerts });
         }
 
-        // Rota: GET /api/stock/report
-        // Gera um relatório completo do estado atual do estoque (requer autenticação JWT)
-        // O atributo [Authorize] obriga o usuário a enviar um token válido para acessar este endpoint
         [Authorize]
         [HttpGet("report")]
         public async Task<IActionResult> Report()
         {
-            // Carrega todos os produtos e as movimentações do dia atual
             var products = await _productRepository.GetAllAsync();
             var todayMovements = await _movementRepository.GetTodayAsync();
 
-            // === Calcula as métricas do Dashboard ===
-            var totalProducts = products.Count;                                          // Total de produtos cadastrados
-            var lowStockCount = products.Count(p => p.Quantity <= p.ReorderThreshold);   // Quantos estão com estoque baixo
-            var outOfStockCount = products.Count(p => p.Quantity == 0);                  // Quantos estão zerados
-            var totalUnits = products.Sum(p => p.Quantity);                              // Soma de todas as unidades em estoque
-            var totalInventoryValue = products.Sum(p => p.TotalStockValue);              // Valor financeiro total do inventário
-            var averagePrice = products.Any() ? products.Average(p => p.Price) : 0m;     // Preço médio dos produtos
+            var totalProducts = products.Count;
+            var lowStockCount = products.Count(p => p.Quantity <= p.ReorderThreshold);
+            var outOfStockCount = products.Count(p => p.Quantity == 0);
+            var totalUnits = products.Sum(p => p.Quantity);
+            var totalInventoryValue = products.Sum(p => p.TotalStockValue);
+            var averagePrice = products.Any() ? products.Average(p => p.Price) : 0m;
 
-            // Filtra as movimentações do dia separando entradas e saídas
             var todayEntries = todayMovements.Where(m => m.Type == MovementType.ENTRADA).Sum(m => m.Quantity);
             var todayExits = todayMovements.Where(m => m.Type == MovementType.SAIDA).Sum(m => m.Quantity);
 
-            // Retorna um objeto anônimo com todos os indicadores para o Frontend popular o Dashboard
             return Ok(new
             {
                 totalProducts,
@@ -215,7 +196,7 @@ namespace ApiEstoqueRoupas.Controllers
                 averagePrice,
                 todayEntries,
                 todayExits,
-                lastUpdate = DateTime.Now // Marca a data/hora em que o relatório foi gerado
+                lastUpdate = DateTime.Now
             });
         }
     }
